@@ -12,6 +12,7 @@ public class Enemies extends Entity {
     public final int screenX, screenY;
     private float transparency = 1.0f;
     private final float TRANSPARENCY_STEP = 0.5f;
+    private double xMove=0,yMove=0,distance,dx,dy;
 
     public static int abs(int x) {
         return x >= 0 ? x : -x;
@@ -25,10 +26,11 @@ public class Enemies extends Entity {
 
         bodyArea = new Rectangle();
         saw = false;
-        hp=5;
+        hp = 5;
+        eSpeed=2;
 
         eNum = 2;
-        sD="L";
+        sD = "L";
 
         screenX = gp.screenWidth / 2 - gp.tileSize / 2;
         screenY = gp.screenHeight / 2 - gp.tileSize / 2;
@@ -41,7 +43,7 @@ public class Enemies extends Entity {
 
     public void getEnemiesImage() {
         try {
-            exclamation=ImageIO.read(getClass().getResourceAsStream("/enemies/exclamation.png"));
+            exclamation = ImageIO.read(getClass().getResourceAsStream("/enemies/exclamation.png"));
             slimeL = new BufferedImage[4];
             slimeR = new BufferedImage[4];
             BufferedImage slimeSheet = ImageIO.read(getClass().getResourceAsStream("/enemies/slimeRed.png"));
@@ -53,9 +55,9 @@ public class Enemies extends Entity {
             sR[0] = slimeSheet.getSubimage(0, 0, 16, 16);
             sR[1] = slimeSheet.getSubimage(16, 0, 16, 16);
 
-            sL=new BufferedImage[2];
-            sL[0]=slimeSheet.getSubimage(0,48,16,16);
-            sL[1]=slimeSheet.getSubimage(16,48,16,16);
+            sL = new BufferedImage[2];
+            sL[0] = slimeSheet.getSubimage(0, 48, 16, 16);
+            sL[1] = slimeSheet.getSubimage(16, 48, 16, 16);
 
             shadow = ImageIO.read(getClass().getResourceAsStream("/enemies/enemySm.png"));
 
@@ -142,28 +144,8 @@ public class Enemies extends Entity {
             }
         }
 
-        if(eX>screenX) sD="L";
-        else sD="R";
-
-        if (alive && !daylui) {
-           // if ((abs(eX - screenX)) < 350 && (abs(eY - screenY)) < 250) {
-                if (eX > screenX) {
-                    eD = "L";
-                    if (eY < screenY) eD = "LD";
-                    else if (eY > screenY) eD = "LU";
-                } else if (eX < screenX) {
-                    eD = "R";
-                    if (eY < screenY) eD = "RD";
-                    else if (eY > screenY) eD = "RU";
-                } else if (eX == screenX) {
-                    if (eY < screenY) {
-                        eD = "D";
-                    } else if (eY > screenY) {
-                        eD = "U";
-                    }
-                }
-            //}
-        }
+        if (eX > screenX) sD = "L";
+        else sD = "R";
 
         eCollision = false;
         eCollisionR = false;
@@ -177,19 +159,15 @@ public class Enemies extends Entity {
             dlNum++;
             switch (gp.player.atkDirection) {
                 case "attackUp":
-                    //      eD="U";
                     if (!eCollision) eSY -= dlS;
                     break;
                 case "attackDown":
-                    //   eD="D";
                     if (!eCollision) eSY += dlS;
                     break;
                 case "attackR":
-                    //   eD="R";
                     if (!eCollision) eSX += dlS;
                     break;
                 case "attackL":
-                    //  eD="L";
                     if (!eCollision) eSX -= dlS;
                     break;
             }
@@ -207,65 +185,51 @@ public class Enemies extends Entity {
         eToPCD = false;
         eToPCL = false;
         eToPCR = false;
-        if(!gp.player.invisible)gp.collisionChecker.eToPCo(this);
-        if(eToPCR||eToPCL||eToPCD||eToPCU) gp.player.invisible = true;
+        if (!gp.player.invisible) gp.collisionChecker.eToPCo(this);
+        if (eToPCR || eToPCL || eToPCD || eToPCU) gp.player.invisible = true;
 
         if ((abs(eX - screenX)) < 350 && (abs(eY - screenY)) < 250) saw = true;
         if (move && alive && !daylui) {
-            switch (eD) {
-                case "U":
-                    if (!eCollision && !eToPCU) eSY--;
-                    break;
-                case "D":
-                    if (!eCollision && !eToPCD) eSY++;
-                    break;
-                case "L":
-                    if (!eCollision && !eToPCL) eSX--;
-                    break;
-                case "R":
-                    if (!eCollision && !eToPCR) eSX++;
-                    break;
-                case "RD":
-                    if (!eCollisionR && !eToPCR) eSX++;
-                    if (!eCollisionD && !eToPCD) eSY++;
-                    break;
-                case "RU":
-                    if (!eCollisionR && !eToPCR) eSX++;
-                    if (!eCollisionU && !eToPCU) eSY--;
-                    break;
-                case "LU":
-                    if (!eCollisionL && !eToPCL) eSX--;
-                    if (!eCollisionU && !eToPCU) eSY--;
-                    break;
-                case "LD":
-                    if (!eCollisionL && !eToPCL) eSX--;
-                    if (!eCollisionD && !eToPCD) eSY++;
-                    break;
+            distance = Math.sqrt(Math.pow(screenX - eX, 2) + Math.pow(screenY - eY, 2));
+            if(distance!=0) {
+                dx = (screenX - eX) / distance;
+                dy = (screenY - eY) / distance;
             }
+            if(dx>0)eD="R";
+            else eD="L";
 
+            xMove+=dx*eSpeed;
+            yMove+=dy*eSpeed;
+
+            eSX+=(int) xMove;
+            eSY+=(int) yMove;
+
+            xMove-=(int) xMove;
+            yMove-=(int) yMove;
         }
 
         if (saw) {
-            if(sawCounter<60){
-            sawCounter++;
-            chamThan=true;
-                if(sawW <20) {
-                    sawW+=2;
-                    sawH+=4;
+            if (sawCounter < 60) {
+                sawCounter++;
+                chamThan = true;
+                if (sawW < 20) {
+                    sawW += 2;
+                    sawH += 4;
                     cX++;
-                    cY+=2;
-                //else if(sawW ==20) {}
-            }}
-            else if(sawCounter==60){
-                move=true;chamThan=false;
+                    cY += 2;
+                    //else if(sawW ==20) {}
+                }
+            } else if (sawCounter == 60) {
+                move = true;
+                chamThan = false;
             }
         }
-        if(move){
-            sawCounter=0;
-            sawW =0;
-            sawH=0;
-            cX=0;
-            cY=0;
+        if (move) {
+            sawCounter = 0;
+            sawW = 0;
+            sawH = 0;
+            cX = 0;
+            cY = 0;
             eCounter++;
             if (eCounter % 8 == 0 && eNum < 3) {
                 eNum++;
@@ -277,14 +241,16 @@ public class Enemies extends Entity {
         }
 //            sawCounter=0;
 //            sawW =0;
-        else { nMCounter++;
+        else {
+            nMCounter++;
             if (nMCounter % 20 == 0 && nMNum < 1) {
                 nMNum++;
             }
             if (nMCounter == 40) {
                 nMNum = 0;
                 nMCounter = 0;
-            }}
+            }
+        }
 
 
     }
@@ -294,14 +260,14 @@ public class Enemies extends Entity {
         if (alive) {
             g2.drawImage(shadow, eX + 7, eY + 48, gp.scale * shadow.getWidth(), gp.scale * shadow.getHeight(), null);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
-            if(chamThan) g2.drawImage(exclamation,eX+34-cX,eY-cY,sawW,sawH,null);
+            if (chamThan) g2.drawImage(exclamation, eX + 33 - cX, eY - cY, sawW, sawH, null);
             if (move) {
                 if (eD.equals("LU") || eD.equals("LD") || eD.equals("L") || eD.equals("U")) slimeI = slimeL[eNum];
                 if (eD.equals("RU") || eD.equals("RD") || eD.equals("R") || eD.equals("D")) slimeI = slimeR[eNum];
                 g2.drawImage(slimeI, eX, eY, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             } else {
-                switch (sD){
+                switch (sD) {
                     case "L":
                         slimeI = sL[nMNum];
                         break;
@@ -323,13 +289,13 @@ public class Enemies extends Entity {
         eSX = 0;
         eSY = 0;
         alive = true;
-        saw=false;
-        move=false;
-        sawCounter=0;
-        sawW =0;
-        sawH=0;
-        cX=0;
-        cY=0;
-        chamThan=false;
+        saw = false;
+        move = false;
+        sawCounter = 0;
+        sawW = 0;
+        sawH = 0;
+        cX = 0;
+        cY = 0;
+        chamThan = false;
     }
 }

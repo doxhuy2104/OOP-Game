@@ -1,10 +1,10 @@
 package main;
 
 import entity.Enemies;
-import entity.Entity;
 import entity.Player;
 import tile.TileManager;
 import ui.GameOver;
+import ui.Hud;
 import ui.Menu;
 import ui.Pause;
 
@@ -20,13 +20,13 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenWidth=tileSize*maxScreenCol;
     public final int screenHeight=tileSize*maxScreenRow;
 
-    public final int maxWorldCol=60;
-    public final int maxWorldRow=50;
+    public final int maxWorldCol=100;
+    public final int maxWorldRow=100;
     public final int worldWidth=tileSize*maxWorldCol;
     public final int worldHeight=tileSize*maxWorldRow;
 
     //System
-    public KeyHandler keyH=new KeyHandler();
+    public KeyHandler keyH=new KeyHandler(this);
     public MouseClickListener mouseClick=new MouseClickListener(this,this);
     public AssetSetter assetSetter =new AssetSetter(this);
     public Sound sound=new Sound();
@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable{
     Enemies enemies=new Enemies(this);
     Pause pauseS=new Pause(this,mouseClick);
     GameOver gameOver=new GameOver(this,mouseClick);
+    Hud hud=new Hud(this);
 
     public CollisionChecker collisionChecker=new CollisionChecker(this);
     public AttackChecker attackChecker=new AttackChecker(this);
@@ -97,6 +98,7 @@ public class GamePanel extends JPanel implements Runnable{
         if(uiManager.inGame){
             FPS=60;
             if(uiManager.play){
+                hud.update();
             if(player.pAlive)player.update();
             //tileManager.updateCampFire();
                 for(int i=0;i<slime.length;i++){
@@ -134,17 +136,14 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2=(Graphics2D) g;
         long drawStart=System.nanoTime();
         if(uiManager.inGame) {
-            //tileManager.drawGlass(g2);
-            //tileManager.drawWater(g2);
-            tileManager.draw1(g2);
-            //tileManager.drawCampFire(g2);
+            tileManager.draw(g2);
             if(player.pAlive)player.draw(g2);
-            //tileManager.drawTree(g2);
             if(player.pAlive)for(int i=0;i<slime.length;i++){
                 if(slime[i]!=null){
                     slime[i].draw(g2);
                 }
             }
+            hud.draw(g2);
             if(uiManager.pause){
                 pauseS.draw(g2);
             }
@@ -164,8 +163,8 @@ public class GamePanel extends JPanel implements Runnable{
         long drawEnd=System.nanoTime();
         long passed=drawEnd-drawStart;
         g2.setColor(Color.WHITE);
-        g2.drawString("Draw Time: "+passed,10,400);
-        System.out.println("Draw Time: "+passed);
+        //g2.drawString("Draw Time: "+passed,10,400);
+        //System.out.println("Draw Time: "+passed);
         g2.dispose();
     }
 

@@ -12,6 +12,7 @@ public class Entity {
     public boolean pAlive=true;//trạng thái sống
     public int speed, cspeed;
     public String uD,lR;//huong de xac dinh anh trc khi dung
+    public int mana;
 
     public String collisionCheck;//kiểm tra va chạm
 
@@ -56,6 +57,7 @@ public class Entity {
     //player
 
     //ênmies
+    public int eSpeed;
     public Rectangle bodyArea;
     public int sx, sy;
     public int eX,eY,eSX=0,eSY=0;

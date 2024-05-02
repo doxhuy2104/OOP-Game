@@ -25,4 +25,7 @@ public class UI {
     BufferedImage[] dieI;
     public int voidX=0,screenX,screenY,dieCounter=0,dieNum=0;
     public boolean gameO=false;
+
+    //hud
+    BufferedImage manaFull,manaFill,manaEmpty;
 }

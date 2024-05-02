@@ -16,6 +16,9 @@ public class Player extends Entity {
     // public final int screenX, screenY;
     int mouseX, mouseY;
     boolean invi=true;
+    private boolean rM=false,aM=false,sM=false;
+    int sMC=0,aMC=0,rMC=0,mC=0;
+    public boolean canSprint;
 
     public static int abs(int x) {
         return x >= 0 ? x : -x;
@@ -28,6 +31,7 @@ public class Player extends Entity {
 
         screenX = gp.screenWidth / 2 - gp.tileSize / 2;
         screenY = gp.screenHeight / 2 - gp.tileSize / 2;
+        mana=100;
 
         solidArea = new Rectangle(8, 32, 48, 32);
 
@@ -208,12 +212,47 @@ public class Player extends Entity {
     }
 
     public void update() {
-        if (keyH.sprint) {//tang toc
+        if (keyH.sprint&&canSprint) {//tang toc
+            if(isMoving)sM=true;
+            else sM=false;
+            if(mana==0) canSprint=false;
             speed = 7;
             cspeed = 5;
         } else {
+            sM=false;
             speed = 4;
             cspeed = 3;
+        }
+        if(sM&&mana>0){
+            sMC++;
+            if(sMC>=3) {
+                sMC=0;
+                if(mana>0)mana--;
+            }
+        }
+        if(rM){
+            rMC++;
+            if(rMC<=50) mana--;
+            else {
+                rMC=0;
+                rM=false;
+            }
+        }
+        if(aM){
+            aMC++;
+            if(aMC<=25) mana--;
+            else {
+                aMC=0;
+                aM=false;
+            }
+        }
+
+        if(!sM&&!aM&&!rM&&mana<100){
+            mC++;
+            if(mC>=2) {
+                mC=0;
+                mana++;
+            }
         }
 
         //toạ độ chuột
@@ -229,12 +268,12 @@ public class Player extends Entity {
                 if (keyH.rightPressed) {
                     lR="R";
                     collisionCheck = direction = "upr";
-                    if (keyH.rolling) isRolling = true;
+                    if (keyH.rolling&&mana>=50) isRolling = true;
                 } else if (keyH.leftPressed) {
                     lR="L";
                     collisionCheck = direction = "upl";
-                    if (keyH.rolling) isRolling = true;
-                } else if (keyH.rolling) {
+                    if (keyH.rolling&&mana>=50) isRolling = true;
+                } else if (keyH.rolling&&mana>=50) {
                     isRolling = true;
                     collisionCheck = "up";
                 }
@@ -245,12 +284,12 @@ public class Player extends Entity {
                 if (keyH.rightPressed) {
                     lR="R";
                     collisionCheck = direction = "downr";
-                    if (keyH.rolling) isRolling = true;
+                    if (keyH.rolling&&mana>=50) isRolling = true;
                 } else if (keyH.leftPressed) {
                     lR="L";
                     collisionCheck = direction = "downl";
-                    if (keyH.rolling) isRolling = true;
-                } else if (keyH.rolling) {
+                    if (keyH.rolling&&mana>=50) isRolling = true;
+                } else if (keyH.rolling&&mana>=50) {
                     isRolling = true;
                 }
             } else if (keyH.rightPressed) {
@@ -258,7 +297,7 @@ public class Player extends Entity {
                 uD="D";
                 lR="R";
                 collisionCheck = direction = "right";
-                if (keyH.rolling) {
+                if (keyH.rolling&&mana>=50) {
                     isRolling = true;
                 }
             } else if (keyH.leftPressed) {
@@ -266,7 +305,7 @@ public class Player extends Entity {
                 uD="D";
                 lR="L";
                 collisionCheck = direction = "left";
-                if (keyH.rolling) {
+                if (keyH.rolling&&mana>=50) {
                     isRolling = true;
                 }
             } else {
@@ -315,11 +354,11 @@ public class Player extends Entity {
         collisionL = false;
         collisionR = false;
         collisionU = false;
-        //gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkTile(this);
 
         //huong tan cong khi nhan chuot trai
-        if (mouseClick.isLeftClick() && !isRolling&&canAttack) {
-
+        if (mouseClick.isLeftClick() && !isRolling&&canAttack&&mana>=25) {
+            aM=true;
             isAttack = true;
             if (abs(mouseX) < abs(mouseY) && mouseY < 0) {
                 atkDirection = "attackUp";
@@ -379,6 +418,7 @@ public class Player extends Entity {
 
         //trang thai lon
         if (isRolling) {
+            rM=true;
             rollingCounter++;
             if (rollingCounter % 5 == 0 && rollingNum < 6) {
                 rollingNum++;
@@ -426,7 +466,7 @@ public class Player extends Entity {
             isThink = false;
             thinkCounter = 0;
             spriteCounter++;
-            if (keyH.sprint) {
+            if (keyH.sprint&&canSprint) {
                 if (spriteCounter % 6 == 0) {
                     spriteNum = (spriteNum + 1) % (direction.equals("up") ? up.length : direction.equals("left") ? left.length : right.length);
                 }

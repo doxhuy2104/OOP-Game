@@ -10,8 +10,8 @@ public class AssetSetter {
 
     public void setEnemies(){
         gp.slime[0] = new Enemies(gp);
-        gp.slime[0].sx =28*gp.tileSize;
-        gp.slime[0].sy =18*gp.tileSize;
+        gp.slime[0].sx =65*gp.tileSize;
+        gp.slime[0].sy =45*gp.tileSize;
 
         gp.slime[1] = new Enemies(gp);
         gp.slime[1].sx =43*gp.tileSize;

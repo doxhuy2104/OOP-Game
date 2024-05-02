@@ -197,8 +197,8 @@ public class Menu extends UI {
                     gp.slime[i].reset();
                 }
             }
-            gp.player.x=60*gp.tileSize;
-            gp.player.y=40*gp.tileSize;
+            gp.player.x=4*gp.tileSize;
+            gp.player.y=4*gp.tileSize;
 
             //trạng thái
             switch (difficult)
@@ -207,6 +207,7 @@ public class Menu extends UI {
                     for(int i=0;i<gp.slime.length;i++){
                         if(gp.slime[i]!=null){
                             gp.slime[i].hp=2;
+                            gp.slime[i].eSpeed=1;
                         }
                     }
                     gp.player.currentHP=gp.player.maxHP=100;
@@ -215,6 +216,8 @@ public class Menu extends UI {
                     for(int i=0;i<gp.slime.length;i++){
                         if(gp.slime[i]!=null){
                             gp.slime[i].hp=5;
+                            gp.slime[i].eSpeed=2;
+
                         }
                     }
                     gp.player.currentHP=gp.player.maxHP=10;
@@ -223,6 +226,7 @@ public class Menu extends UI {
                     for(int i=0;i<gp.slime.length;i++){
                         if(gp.slime[i]!=null){
                             gp.slime[i].hp=10;
+                            gp.slime[i].eSpeed=4;
                         }
                     }
                     gp.player.currentHP=gp.player.maxHP=2;
@@ -457,11 +461,16 @@ public class Menu extends UI {
         if (CREDITS) {
             g2.setFont(Font2);
             g2.setColor(Color.WHITE);
-            g2.drawString("Đỗ Xuân Huy 20225331", 500, 50);
-            g2.drawString("Nguyễn Văn Quang Huy 20225337", 500, 100);
-            g2.drawString("Bùi Nguyên Huy 20225330", 500, 150);
-            g2.drawString("Nguyễn Thế Anh 20225163", 500, 200);
-            g2.drawString("Phan Lê Hải Đăng 20225273", 500, 250);
+            g2.drawString("Đỗ Xuân Huy", 500, 130);
+            g2.drawString("Nguyễn Văn Quang Huy", 500, 180);
+            g2.drawString("Bùi Nguyên Huy", 500, 230);
+            g2.drawString("Nguyễn Thế Anh", 500, 280);
+            g2.drawString("Phan Lê Hải Đăng", 500, 330);
+            g2.drawString("20225331", 860, 130);
+            g2.drawString("20225337", 860, 180);
+            g2.drawString("20225330", 860, 230);
+            g2.drawString("20225163", 860, 280);
+            g2.drawString("20225273", 860, 330);
             g2.setFont(Font1);
             g2.drawString("BACK", bX, bY);
             if (side) {
