@@ -7,7 +7,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("ErishNoom");
+        window.setTitle("ErishNom");
 
         GamePanel gamePanel=new GamePanel();
         window.add(gamePanel);
