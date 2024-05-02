@@ -234,13 +234,14 @@ public class Player extends Entity {
             rMC++;
             if(rMC<=50) mana--;
             else {
-                rMC=0;
                 rM=false;
+                rMC=0;
+
             }
         }
         if(aM){
             aMC++;
-            if(aMC<=25) mana--;
+            if(aMC<=10) mana-=2;
             else {
                 aMC=0;
                 aM=false;
@@ -249,7 +250,7 @@ public class Player extends Entity {
 
         if(!sM&&!aM&&!rM&&mana<100){
             mC++;
-            if(mC>=2) {
+            if(mC>=3) {
                 mC=0;
                 mana++;
             }
