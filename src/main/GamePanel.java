@@ -1,6 +1,6 @@
 package main;
 
-import entity.Enemies;
+import entity.Slime;
 import entity.Player;
 import tile.TileManager;
 import ui.GameOver;
@@ -38,8 +38,8 @@ public class GamePanel extends JPanel implements Runnable{
     public Player player=new Player(this,keyH,mouseClick);
     TileManager tileManager =new TileManager(this);
     public Menu uiManager=new Menu(this,keyH,mouseClick);
-    public Enemies slime[]=new Enemies[20];
-    Enemies enemies=new Enemies(this);
+    public Slime slime[]=new Slime[20];
+    Slime enemies=new Slime(this);
     Pause pauseS=new Pause(this,mouseClick);
     GameOver gameOver=new GameOver(this,mouseClick);
     Hud hud=new Hud(this);

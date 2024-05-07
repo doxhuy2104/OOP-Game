@@ -1,8 +1,6 @@
 package main;
 
-import entity.Enemies;
 import entity.Entity;
-import entity.Player;
 
 public class AttackChecker {
     GamePanel gp;
