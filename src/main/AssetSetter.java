@@ -1,5 +1,6 @@
 package main;
 
+import entity.CaSau;
 import entity.Slime;
 
 public class AssetSetter {
@@ -24,5 +25,13 @@ public class AssetSetter {
         gp.slime[3] = new Slime(gp);
         gp.slime[3].sx =20*gp.tileSize;
         gp.slime[3].sy =30*gp.tileSize;
+
+        gp.slime[4] = new Slime(gp);
+        gp.slime[4].sx =11*gp.tileSize;
+        gp.slime[4].sy =6*gp.tileSize;
+
+        gp.caSau[0] = new CaSau(gp);
+        gp.caSau[0].sx = 6*gp.tileSize;
+        gp.caSau[0].sy = 6*gp.tileSize;
     }
 }

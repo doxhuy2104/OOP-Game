@@ -196,6 +196,9 @@ public class Menu extends UI {
                 if(gp.slime[i]!=null){
                     gp.slime[i].reset();
                 }
+                if(gp.caSau[i]!=null){
+                    gp.caSau[i].reset();
+                }
             }
             gp.player.x=4*gp.tileSize;
             gp.player.y=4*gp.tileSize;

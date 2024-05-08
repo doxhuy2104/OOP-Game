@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Slime extends Entity {
+public class Slime extends Enemies {
     GamePanel gp;
     public final int screenX, screenY;
     private float transparency = 1.0f;
@@ -20,9 +20,10 @@ public class Slime extends Entity {
 
 
     public Slime(GamePanel gp) {
-        this.gp = gp;
+        super(gp);
+        this.gp=gp;
 
-        getEnemiesImage();
+        getSlimeImage();
 
         bodyArea = new Rectangle();
         saw = false;
@@ -30,7 +31,7 @@ public class Slime extends Entity {
         eSpeed=2;
 
         eNum = 2;
-        sD = "L";
+        mD = "L";
 
         screenX = gp.screenWidth / 2 - gp.tileSize / 2;
         screenY = gp.screenHeight / 2 - gp.tileSize / 2;
@@ -41,7 +42,7 @@ public class Slime extends Entity {
     }
 
 
-    public void getEnemiesImage() {
+    public void getSlimeImage() {
         try {
             exclamation = ImageIO.read(getClass().getResourceAsStream("/enemies/exclamation.png"));
             slimeL = new BufferedImage[4];
@@ -71,165 +72,13 @@ public class Slime extends Entity {
         }
     }
 
-    public void update() {
-        if (alive) {//cap nhat toa do quai vat
-            eX = -gp.player.x + gp.player.screenX + eSX + sx;
-            eY = -gp.player.y + gp.player.screenY + eSY + sy;
-        }
+    public void update(){
         bodyArea = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
-        attacking = false;
-        gp.attackChecker.attackChecker(this);
-        if (attacking && hp != 0) {//quai vat bi tan cong
-            daylui = true;
-            if (atkCounter == 0) {
-                if (hp > 1)
-                    gp.playSoundEffect(0);
-                hp--;
-                atkCounter = 1;
-                transparency -= TRANSPARENCY_STEP;
-                if (transparency < 0.0f) {
-                    transparency = 0.0f;
-                }
-            }
-            sparkCounter++;
-            if (sparkCounter % 7 == 0) {
-                sparkNum++;
-            }
-            if (hp == 0) {
-                sp = true;
-                gp.playSoundEffect(4);
-            }
-        } else {
-            transparency += TRANSPARENCY_STEP;
-            if (transparency > 1.0f) {
-                transparency = 1.0f;
-            }
-        }
-
-        if (!attacking) {
-            sparkCounter = 0;
-            sparkNum = 0;
-            atkCounter = 0;
-        }
-        if (hp == 0) {
-            alive = false;
-        }
-        if (sp) {
-            sparkCounter++;
-            if (sparkCounter % 7 == 0) {
-                sparkNum++;
-            }
-            if (sparkNum == 2) {
-                sparkCounter = 0;
-                sparkNum = 0;
-                sp = false;
-            }
-        }
-
-
-        if (daylui) {
-            switch (gp.player.atkDirection) {
-                case "attackUp":
-                    eD = "U";
-                    break;
-                case "attackDown":
-                    eD = "D";
-                    break;
-                case "attackR":
-                    eD = "R";
-                    break;
-                case "attackL":
-                    eD = "L";
-                    break;
-            }
-        }
-
-        if (eX > screenX) sD = "L";
-        else sD = "R";
-
-        eCollision = false;
-        eCollisionR = false;
-        eCollisionL = false;
-        eCollisionU = false;
-        eCollisionD = false;
-        gp.collisionChecker.checkTileEnemies(this);
-
-
-        if (daylui) {
-            dlNum++;
-            switch (gp.player.atkDirection) {
-                case "attackUp":
-                    if (!eCollision) eSY -= dlS;
-                    break;
-                case "attackDown":
-                    if (!eCollision) eSY += dlS;
-                    break;
-                case "attackR":
-                    if (!eCollision) eSX += dlS;
-                    break;
-                case "attackL":
-                    if (!eCollision) eSX -= dlS;
-                    break;
-            }
-            if (dlNum % 5 == 0) {
-                dlS--;
-                if (dlNum == 30) {
-                    daylui = false;
-                    dlNum = 0;
-                    dlS = 6;
-                }
-            }
-        }
-
-        eToPCU = false;
-        eToPCD = false;
-        eToPCL = false;
-        eToPCR = false;
-        if (!gp.player.invisible) gp.collisionChecker.eToPCo(this);
-        if (eToPCR || eToPCL || eToPCD || eToPCU) gp.player.invisible = true;
-
-        if ((abs(eX - screenX)) < 350 && (abs(eY - screenY)) < 250) saw = true;
-        if (move && alive && !daylui) {
-            distance = Math.sqrt(Math.pow(screenX - eX, 2) + Math.pow(screenY - eY, 2));
-            if(distance!=0) {
-                dx = (screenX - eX) / distance;
-                dy = (screenY - eY) / distance;
-            }
-            if(dx>0)eD="R";
-            else eD="L";
-
-            xMove+=dx*eSpeed;
-            yMove+=dy*eSpeed;
-
-            eSX+=(int) xMove;
-            eSY+=(int) yMove;
-
-            xMove-=(int) xMove;
-            yMove-=(int) yMove;
-        }
-
-        if (saw) {
-            if (sawCounter < 60) {
-                sawCounter++;
-                chamThan = true;
-                if (sawW < 20) {
-                    sawW += 2;
-                    sawH += 4;
-                    cX++;
-                    cY += 2;
-                    //else if(sawW ==20) {}
-                }
-            } else if (sawCounter == 60) {
-                move = true;
-                chamThan = false;
-            }
-        }
-        if (move) {
-            sawCounter = 0;
-            sawW = 0;
-            sawH = 0;
-            cX = 0;
-            cY = 0;
+        super.update();
+        if(daylui) super.daylui();
+        if (saw) super.saw();
+        if (move && alive && !daylui){
+            super.move();
             eCounter++;
             if (eCounter % 8 == 0 && eNum < 3) {
                 eNum++;
@@ -239,9 +88,7 @@ public class Slime extends Entity {
                 eCounter = 0;
             }
         }
-//            sawCounter=0;
-//            sawW =0;
-        else {
+        if(!move){
             nMCounter++;
             if (nMCounter % 20 == 0 && nMNum < 1) {
                 nMNum++;
@@ -251,8 +98,7 @@ public class Slime extends Entity {
                 nMCounter = 0;
             }
         }
-
-
+        super.attacked();
     }
 
     public void draw(Graphics2D g2) {
@@ -267,7 +113,7 @@ public class Slime extends Entity {
                 g2.drawImage(slimeI, eX, eY, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             } else {
-                switch (sD) {
+                switch (mD) {
                     case "L":
                         slimeI = sL[nMNum];
                         break;
@@ -286,16 +132,6 @@ public class Slime extends Entity {
 
 
     public void reset() {
-        eSX = 0;
-        eSY = 0;
-        alive = true;
-        saw = false;
-        move = false;
-        sawCounter = 0;
-        sawW = 0;
-        sawH = 0;
-        cX = 0;
-        cY = 0;
-        chamThan = false;
+        super.reset();
     }
 }

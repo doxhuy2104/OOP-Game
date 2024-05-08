@@ -1,5 +1,6 @@
 package main;
 
+import entity.Enemies;
 import entity.Entity;
 
 public class AttackChecker {
@@ -9,7 +10,7 @@ public class AttackChecker {
         this.gp = gp;
     }
 
-    public void attackChecker(Entity entity) {
+    public void attackChecker(Enemies entity) {
         if(gp.player.isAttack){
             //vùng tấn công phía trên
             int atkU = gp.player.attackAreaU.y;

@@ -29,7 +29,7 @@ public class Entity {
 
 
     public int spriteCounter=0,nMCounter=0;
-    public int spriteNum=0,nMNum=0;
+    public int spriteNum=0;
     public int attackCounter=0;
     public int attackNum=0;
 
@@ -56,23 +56,5 @@ public class Entity {
     public boolean invisible,canAttack;
     //player
 
-    //ênmies
-    public int eSpeed;
-    public Rectangle bodyArea;
-    public int sx, sy;
-    public int eX,eY,eSX=0,eSY=0;
-    public boolean attacking=true,alive=true,daylui=false;
-    public int eCounter=0,eNum=0,dlNum=0,dlS=6,sawCounter=0, sawW =0,sawH=0,cX=0,cY=0;
-    public int hp;
-    public int atkCounter;
-    BufferedImage[] spark;
-    public int sparkCounter=0,sparkNum=0;
-    public String eD="L",sD;
-    BufferedImage slimeI,exclamation;
-    public boolean sp=false;
-    public boolean eCollision=false,eCollisionR=false,eCollisionL=false,eCollisionU=false,eCollisionD=false;
-    public boolean saw=false,move=false,chamThan=false;
-    public boolean eToPCU,eToPCD,eToPCL,eToPCR;
-    public BufferedImage[] slimeR,slimeL,sL,sR;
-    //enemies
+
 }

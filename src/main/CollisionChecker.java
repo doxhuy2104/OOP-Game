@@ -1,5 +1,6 @@
 package main;
 
+import entity.Enemies;
 import entity.Slime;
 import entity.Entity;
 
@@ -119,7 +120,7 @@ public class CollisionChecker {
         }
     }
 
-    public void checkTileEnemies(Entity entity) {
+    public void checkTileEnemies(Enemies entity) {
         int enemieLeft = entity.eSX + entity.sx + 8;
         int enemieRight = enemieLeft + entity.bodyArea.width;
         int enemieTop = entity.eSY + entity.sy + 24;
@@ -304,7 +305,7 @@ public class CollisionChecker {
         }
     }
 
-    public void eToPCo(Slime enemies) {
+    public void eToPCo(Enemies enemies) {
         int playerTop = enemies.screenY + 32;
         int playerBot = playerTop + gp.player.solidArea.height;
         int playerLeft = enemies.screenX + 8;
