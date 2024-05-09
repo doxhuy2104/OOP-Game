@@ -133,7 +133,7 @@ public class CollisionChecker {
 
         int tileNum1, tileNum2, tileNum3;
 
-        switch (entity.eD) {
+        switch (entity.mD) {
             case "U":
                 enemieTopRow = (enemieTop - entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];

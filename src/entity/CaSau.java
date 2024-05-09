@@ -8,11 +8,11 @@ import java.awt.image.BufferedImage;
 
 public class CaSau extends Enemies{
     GamePanel gp;
-    BufferedImage[] cMove,cAttack,cWake;
-    BufferedImage cSleep;
-    int screenX,screenY,centerX,centerY;
-    int mNum=0,mCounter=0,aCounter=0,aNum=0,wCounter=0,wNum=0;
-    boolean wake=false,attack=false;
+    BufferedImage[] cMove,cAttack,cWake,cMoveL,cAttackL,cWakeL;
+    BufferedImage cSleep,Wake,Move,Attack;
+    int screenX,screenY;
+    int mNum=0,mCounter=0,aCounter=0,aNum=0,wCounter=0,wNum=0,s=0;
+    boolean wake=false,attack=false,atk=false;
 
     public CaSau(GamePanel gp) {
         super(gp);
@@ -46,9 +46,19 @@ public class CaSau extends Enemies{
                 cMove[i]=casau.getSubimage(i*22,22,22,22);
             }
 
+            cMoveL=new BufferedImage[4];
+            for(int i=0;i<4;i++){
+                cMoveL[i]=casau.getSubimage(66-i*22,110,22,22);
+            }
+
             cAttack=new BufferedImage[4];
             for(int i=0;i<4;i++){
                 cAttack[i]=casau.getSubimage(i*22,44,22,22);
+            }
+
+            cAttackL=new BufferedImage[4];
+            for(int i=0;i<4;i++){
+                cAttackL[i]=casau.getSubimage(66-i*22,132,22,22);
             }
 
             cSleep=casau.getSubimage(0,66,22,22);
@@ -56,14 +66,21 @@ public class CaSau extends Enemies{
             for(int i=0;i<2;i++){
                 cWake[i]=casau.getSubimage(i*22,0,22,22);
             }
+
+            cWakeL=new BufferedImage[2];
+            for(int i=0;i<2;i++){
+                cWakeL[i]=casau.getSubimage(66-i*22,88,22,22);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     public void update(){
-        bodyArea = new Rectangle(eX + 16, eY + 40, 52, 48);//cap nhat tao do phan than quai vat
+        super.direction();
         super.update();
+        bodyArea = new Rectangle(eX + 16, eY + 40, 52, 48);//cap nhat tao do phan than quai vat
+
         if(daylui) super.daylui();
         if (saw) {
             super.saw();
@@ -91,46 +108,78 @@ public class CaSau extends Enemies{
             }
         }
         super.attacked();
-        centerX=bodyArea.x+bodyArea.width/2;
-        centerY=bodyArea.y+bodyArea.height/2;
-        int distanceX=gp.screenWidth/2-centerX;
-        int distanceY=gp.screenHeight/2-centerY;
-        int distance=(int)Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-        if(distance<200) if(move) attack=true;
-        if (attack) {
-            double angle = Math.atan2(distanceY, distanceX);
-            if(aNum==0) aCounter++;
-            if(aCounter>=10&&aNum==0){
-                aCounter=0;
-                aNum=1;
-                move=false;
-            }
-            if(aNum==1) aCounter++;
-            if(aCounter>=60){
-                aCounter=0;
-                aNum=2;
-            }
-            if(aNum==2){
 
-            }
-        }
+        if(distance<200) if(move) attack=true;
+        if(aNum==0) aCounter++;
+        if (attack) attack();
     }
 
     public void attack(){
-
+        if(!atk){
+            dx=(centerScreenX-centerX)/distance;
+            dy=(centerScreenY-centerY)/distance;
+            atk=true;
+        }
+        if(aNum==0) aCounter++;
+        if(aCounter>=10&&aNum==0){
+            aCounter=0;
+            aNum=1;
+            move=false;
+        }
+        if(aNum==1) aCounter++;
+        if(aCounter>=20){
+            aCounter=0;
+            aNum=2;
+        }
+        if(aNum==2) {
+            xMove+=dx*13;
+            yMove+=dy*13;
+            eSX+=(int)xMove;
+            eSY+=(int)yMove;
+            xMove-=(int)xMove;
+            yMove-=(int)yMove;
+            s+=13;
+            if(s>130){
+                aCounter=0;
+                aNum=3;
+                s=0;
+            }
+        }
+        if(aNum==3) {
+            aCounter++;
+            if(aCounter>=10){
+                aNum=0;
+                aCounter=0;
+                attack=false;
+                atk=false;
+                move=true;
+            }
+        }
     }
 
     public void draw(Graphics2D g2) {
+        Wake=null;Move=null;Attack=null;
+        switch (eD){
+            case "L":
+                Wake=cWakeL[wNum];
+                Attack=cAttackL[aNum];
+                Move=cMoveL[mNum];
+                break;
+            case "R":
+                Wake=cWake[wNum];
+                Attack=cAttack[aNum];
+                Move=cMove[mNum];
+                break;
+        }
         if (alive) {
             if (!moved) {
                 if (!saw) g2.drawImage(cSleep, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
-                else g2.drawImage(cWake[wNum], eX, eY, 22 * gp.scale, 22 * gp.scale, null);
-            }else if(!attack) g2.drawImage(cMove[mNum], eX, eY, 22 * gp.scale, 22 * gp.scale, null);
-            if(attack) g2.drawImage(cAttack[aNum], eX, eY, 22 * gp.scale, 22 * gp.scale, null);
+                else g2.drawImage(Wake, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
+            }else if(!attack) g2.drawImage(Move, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
+            if(attack) g2.drawImage(Attack, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
         }
-        g2.drawString("move: "+move,10,110);
-        g2.drawString("sawCOunter: "+sawCounter,10,120);
-        g2.drawString("attack: "+attack,10,130);
+        g2.drawString("mNum: "+mNum+" mConter: "+mCounter,10,100);
+        g2.drawString("attack: "+attack,10,110);
     }
 
     public void reset(){

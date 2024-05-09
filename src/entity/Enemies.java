@@ -10,7 +10,7 @@ public class Enemies {
     public final int screenX, screenY;
     private float transparency = 1.0f;
     private final float TRANSPARENCY_STEP = 0.5f;
-    private double xMove=0,yMove=0,distance,dx,dy;
+    public double xMove=0,yMove=0,distance,dx,dy;
     public int eSpeed;
     public BufferedImage shadow;
     public Rectangle bodyArea;
@@ -33,12 +33,12 @@ public class Enemies {
     public int nMCounter=0,nMNum=0;//no move
     public int speed;
     public boolean moved;
+    public int distanceX,distanceY;
+    public int centerX,centerY;
+    final int centerScreenX=512,centerScreenY=288;
 
     //enemies
     GamePanel gp;
-    public static int abs(int x) {
-        return x >= 0 ? x : -x;
-    }
 
     public Enemies(GamePanel gp){
         this.gp=gp;
@@ -61,8 +61,6 @@ public class Enemies {
         }
         attacking = false;
         gp.attackChecker.attackChecker(this);
-        if (eX > screenX) mD = "L";
-        else mD = "R";
         eCollision = false;
         eCollisionR = false;
         eCollisionL = false;
@@ -76,23 +74,27 @@ public class Enemies {
         eToPCR = false;
         if (!gp.player.invisible) gp.collisionChecker.eToPCo(this);
         if (eToPCR || eToPCL || eToPCD || eToPCU) gp.player.invisible = true;
-
-        if ((abs(eX - screenX)) < 350 && (abs(eY - screenY)) < 250) saw = true;
+        centerX=bodyArea.x+bodyArea.width/2;
+        centerY=bodyArea.y+bodyArea.height/2;
+        distanceX=centerScreenX-centerX;
+        distanceY=centerScreenY-centerY;
+        distance=Math.sqrt(distanceX*distanceX+distanceY*distanceY);
+        if (distance<300) saw = true;
     }
 
     public void daylui(){
         switch (gp.player.atkDirection) {
             case "attackUp":
-                eD = "U";
+                mD = "U";
                 break;
             case "attackDown":
-                eD = "D";
+                mD = "D";
                 break;
             case "attackR":
-                eD = "R";
+                mD = "R";
                 break;
             case "attackL":
-                eD = "L";
+                mD = "L";
                 break;
         }
         dlNum++;
@@ -129,7 +131,6 @@ public class Enemies {
                 sawH += 4;
                 cX++;
                 cY += 2;
-                //else if(sawW ==20) {}
             }
         } else if (sawCounter == 60) {
             sawCounter=0;
@@ -140,10 +141,9 @@ public class Enemies {
     }
 
     public void move(){
-        distance = Math.sqrt(Math.pow(screenX - eX, 2) + Math.pow(screenY - eY, 2));
         if(distance!=0) {
-            dx = (screenX - eX) / distance;
-            dy = (screenY - eY) / distance;
+            dx = (centerScreenX - centerX) / distance;
+            dy = (centerScreenY - centerY) / distance;
         }
         if(dx>0)eD="R";
         else eD="L";
@@ -151,8 +151,8 @@ public class Enemies {
         xMove+=dx*eSpeed;
         yMove+=dy*eSpeed;
 
-        if(!eCollisionL||!eCollisionR)eSX+=(int) xMove;
-        if(!eCollisionD||!eCollisionU)eSY+=(int) yMove;
+        if(!eCollision&&!eCollisionL&&!eCollisionR)eSX+=(int) xMove;
+        if(!eCollision&&!eCollisionD&&!eCollisionU)eSY+=(int) yMove;
 
         xMove-=(int) xMove;
         yMove-=(int) yMove;
@@ -214,8 +214,30 @@ public class Enemies {
     }
 
     public void direction(){
-        if(eX>screenX) mD ="L";
-        else mD ="R";
+        if(centerX>(gp.screenWidth/2)){
+            mD ="L";
+            if(centerY>(gp.screenHeight/2)){
+                mD="LU";
+            }
+            else if(centerY<(gp.screenHeight/2)){
+                mD="LD";
+            }
+        } else if(centerX<(gp.screenWidth/2)){
+            mD ="R";
+            if(centerY>(gp.screenHeight/2)){
+                mD="RU";
+            }
+            else if(centerY<(gp.screenHeight/2)){
+                mD="RD";
+            }
+        } else {
+            if(eY>screenY){
+                mD="U";
+            }
+            else if(eY<screenY){
+                mD="D";
+            }
+        }
     }
 
     public void reset(){
@@ -230,5 +252,6 @@ public class Enemies {
         cX = 0;
         cY = 0;
         chamThan = false;
+        moved = false;
     }
 }

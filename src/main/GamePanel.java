@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter assetSetter = new AssetSetter(this);
     public Sound sound = new Sound();
     public Music music = new Music();
+    private long firstTime, lastTime;
 
     Thread gameThread;
 
@@ -88,6 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        firstTime = System.nanoTime();
         if (uiManager.gameO) {
             FPS = 60;
             gameOver.update();
@@ -136,6 +138,7 @@ public class GamePanel extends JPanel implements Runnable {
             FPS = 240;
             uiManager.updateUI();
         }
+        lastTime = System.nanoTime();
     }
 
     public void paintComponent(Graphics g) {
@@ -174,10 +177,11 @@ public class GamePanel extends JPanel implements Runnable {
 
 
         long drawEnd = System.nanoTime();
-        long passed = drawEnd - drawStart;
+        //long passed = drawEnd - drawStart;
+        long passed = drawEnd - firstTime;
         g2.setColor(Color.WHITE);
-        g2.drawString("Draw Time: "+passed,10,400);
-        System.out.println("Draw Time: "+passed);
+        //g2.drawString("Draw Time: "+passed,10,400);
+        //System.out.println("Draw Time: "+passed);
         g2.dispose();
     }
 

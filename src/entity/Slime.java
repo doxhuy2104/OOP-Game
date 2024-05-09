@@ -73,8 +73,9 @@ public class Slime extends Enemies {
     }
 
     public void update(){
-        bodyArea = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
+        super.direction();
         super.update();
+        bodyArea = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
         if(daylui) super.daylui();
         if (saw) super.saw();
         if (move && alive && !daylui){
@@ -113,7 +114,7 @@ public class Slime extends Enemies {
                 g2.drawImage(slimeI, eX, eY, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             } else {
-                switch (mD) {
+                switch (eD) {
                     case "L":
                         slimeI = sL[nMNum];
                         break;

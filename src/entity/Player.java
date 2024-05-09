@@ -355,7 +355,7 @@ public class Player extends Entity {
         collisionL = false;
         collisionR = false;
         collisionU = false;
-        gp.collisionChecker.checkTile(this);
+        //gp.collisionChecker.checkTile(this);
 
         //huong tan cong khi nhan chuot trai
         if (mouseClick.isLeftClick() && !isRolling&&canAttack&&mana>=25) {
@@ -509,7 +509,7 @@ public class Player extends Entity {
             if (sliceCounter % 5 == 0) {
                 sliceNum++;
             }
-            if (attackCounter % 5 == 0) {
+            if (attackCounter % 10 == 0) {
                 attackNum = (attackNum + 1) % attackR.length;
             }
             if(attackCounter==1)canAttack=false;
