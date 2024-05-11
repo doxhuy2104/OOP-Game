@@ -31,7 +31,7 @@ public class AssetSetter {
 //        gp.slime[4].sy =6*gp.tileSize;
 
         gp.caSau[0] = new CaSau(gp);
-        gp.caSau[0].sx = 7*gp.tileSize;
-        gp.caSau[0].sy = 14*gp.tileSize;
+        gp.caSau[0].sx = 12*gp.tileSize;
+        gp.caSau[0].sy = 24*gp.tileSize;
     }
 }

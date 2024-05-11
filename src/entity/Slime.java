@@ -11,13 +11,6 @@ public class Slime extends Enemies {
     GamePanel gp;
     public final int screenX, screenY;
     private float transparency = 1.0f;
-    private final float TRANSPARENCY_STEP = 0.5f;
-    private double xMove=0,yMove=0,distance,dx,dy;
-
-    public static int abs(int x) {
-        return x >= 0 ? x : -x;
-    }
-
 
     public Slime(GamePanel gp) {
         super(gp);
@@ -25,7 +18,9 @@ public class Slime extends Enemies {
 
         getSlimeImage();
 
-        bodyArea = new Rectangle();
+        bodyAreaA = new Rectangle();
+        bodyAreaC = new Rectangle();
+
         saw = false;
         hp = 5;
         eSpeed=2;
@@ -75,7 +70,9 @@ public class Slime extends Enemies {
     public void update(){
         super.direction();
         super.update();
-        bodyArea = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
+        bodyAreaA = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
+        bodyAreaC = new Rectangle(eSX+sx + 8, eSY+sy + 24, 48, 36);//cap nhat tao do phan than quai vat
+
         if(daylui) super.daylui();
         if (saw) super.saw();
         if (move && alive && !daylui){

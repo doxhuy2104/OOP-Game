@@ -37,10 +37,10 @@ public class AttackChecker {
             int atkRL = gp.player.attackAreaR.x;
 
             //vùng cơ thể của quái vật
-            int bodyU = entity.bodyArea.y;
-            int bodyD  =entity.bodyArea.y + entity.bodyArea.height;
-            int bodyL = entity.bodyArea.x;
-            int bodyR = entity.bodyArea.x + entity.bodyArea.width;
+            int bodyU = entity.bodyAreaA.y;
+            int bodyD  =entity.bodyAreaA.y + entity.bodyAreaA.height;
+            int bodyL = entity.bodyAreaA.x;
+            int bodyR = entity.bodyAreaA.x + entity.bodyAreaA.width;
 
             switch (gp.player.atkDirection) {
                 case "attackUp":

@@ -1,8 +1,9 @@
 package main;
 
 import entity.Enemies;
-import entity.Slime;
 import entity.Entity;
+
+import java.awt.*;
 
 public class CollisionChecker {
     GamePanel gp;
@@ -121,10 +122,10 @@ public class CollisionChecker {
     }
 
     public void checkTileEnemies(Enemies entity) {
-        int enemieLeft = entity.eSX + entity.sx + 8;
-        int enemieRight = enemieLeft + entity.bodyArea.width;
-        int enemieTop = entity.eSY + entity.sy + 24;
-        int enemieBottom = enemieTop + entity.bodyArea.height;
+        int enemieLeft = entity.bodyAreaC.x;
+        int enemieRight = enemieLeft + entity.bodyAreaC.width;
+        int enemieTop = entity.bodyAreaC.y;
+        int enemieBottom = enemieTop + entity.bodyAreaC.height;
 
         int enemieLeftCol = enemieLeft / gp.tileSize;
         int enemieRightCol = enemieRight / gp.tileSize;
@@ -242,10 +243,10 @@ public class CollisionChecker {
 
         for (int i = 0; i < gp.slime.length; i++) {
             if (gp.slime[i] != null) {
-                enemieTop[i] = gp.slime[i].bodyArea.y;
-                enemieBot[i] = enemieTop[i] + gp.slime[i].bodyArea.height;
-                enemieLeft[i] = gp.slime[i].bodyArea.x;
-                enemieRight[i] = enemieLeft[i] + gp.slime[i].bodyArea.width;
+                enemieTop[i] = gp.slime[i].bodyAreaA.y;
+                enemieBot[i] = enemieTop[i] + gp.slime[i].bodyAreaA.height;
+                enemieLeft[i] = gp.slime[i].bodyAreaA.x;
+                enemieRight[i] = enemieLeft[i] + gp.slime[i].bodyAreaA.width;
                 if(gp.slime[i].alive){
                 switch (entity.collisionCheck) {
                     case "up":
@@ -311,10 +312,10 @@ public class CollisionChecker {
         int playerLeft = enemies.screenX + 8;
         int playerRight = playerLeft + gp.player.solidArea.width;
 
-        int enemieTop = enemies.bodyArea.y;
-        int enemieBot = enemieTop + enemies.bodyArea.height;
-        int enemieLeft = enemies.bodyArea.x;
-        int enemieRight = enemieLeft + enemies.bodyArea.width;
+        int enemieTop = enemies.bodyAreaA.y;
+        int enemieBot = enemieTop + enemies.bodyAreaA.height;
+        int enemieLeft = enemies.bodyAreaA.x;
+        int enemieRight = enemieLeft + enemies.bodyAreaA.width;
 
         switch (enemies.eD) {
             case "U":

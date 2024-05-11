@@ -13,7 +13,7 @@ public class Enemies {
     public double xMove=0,yMove=0,distance,dx,dy;
     public int eSpeed;
     public BufferedImage shadow;
-    public Rectangle bodyArea;
+    public Rectangle bodyAreaA,bodyAreaC;
     public int sx, sy;
     public int eX,eY,eSX=0,eSY=0;
     public boolean attacking=true,alive=true,daylui=false;
@@ -42,7 +42,7 @@ public class Enemies {
 
     public Enemies(GamePanel gp){
         this.gp=gp;
-        bodyArea = new Rectangle();
+        bodyAreaA = new Rectangle();
         saw = false;
         hp = 5;
         eSpeed=2;
@@ -74,8 +74,8 @@ public class Enemies {
         eToPCR = false;
         if (!gp.player.invisible) gp.collisionChecker.eToPCo(this);
         if (eToPCR || eToPCL || eToPCD || eToPCU) gp.player.invisible = true;
-        centerX=bodyArea.x+bodyArea.width/2;
-        centerY=bodyArea.y+bodyArea.height/2;
+        centerX= bodyAreaA.x+ bodyAreaA.width/2;
+        centerY= bodyAreaA.y+ bodyAreaA.height/2;
         distanceX=centerScreenX-centerX;
         distanceY=centerScreenY-centerY;
         distance=Math.sqrt(distanceX*distanceX+distanceY*distanceY);

@@ -12,14 +12,15 @@ public class CaSau extends Enemies{
     BufferedImage cSleep,Wake,Move,Attack;
     int screenX,screenY;
     int mNum=0,mCounter=0,aCounter=0,aNum=0,wCounter=0,wNum=0,s=0;
-    boolean wake=false,attack=false,atk=false;
+    boolean wake=false,attack=false,atk=false,canAttack=true;
 
     public CaSau(GamePanel gp) {
         super(gp);
         this.gp=gp;
         getCaSauImage();
 
-        bodyArea = new Rectangle();
+        bodyAreaA = new Rectangle();
+        bodyAreaC = new Rectangle();
         saw = false;
         hp = 5;
         eSpeed=2;
@@ -79,7 +80,8 @@ public class CaSau extends Enemies{
     public void update(){
         super.direction();
         super.update();
-        bodyArea = new Rectangle(eX + 16, eY + 40, 52, 48);//cap nhat tao do phan than quai vat
+        bodyAreaA = new Rectangle(eX + 16, eY + 36, 52, 52);
+        bodyAreaC = new Rectangle(eSX+sx + 16, eSY+sy + 36, 52, 52);
 
         if(daylui) super.daylui();
         if (saw) {
@@ -108,9 +110,14 @@ public class CaSau extends Enemies{
             }
         }
         super.attacked();
-
-        if(distance<200) if(move) attack=true;
-        if(aNum==0) aCounter++;
+        if(!canAttack){
+            aCounter++;
+            if(aCounter>=30){
+                aCounter=0;
+                canAttack=true;
+            }
+        }
+        if(distance<150) if(move&&canAttack) attack=true;
         if (attack) attack();
     }
 
@@ -134,8 +141,8 @@ public class CaSau extends Enemies{
         if(aNum==2) {
             xMove+=dx*13;
             yMove+=dy*13;
-            eSX+=(int)xMove;
-            eSY+=(int)yMove;
+            if(!eCollision&&!eCollisionL&&!eCollisionR)eSX+=(int)xMove;
+            if(!eCollision&&!eCollisionD&&!eCollisionU)eSY+=(int)yMove;
             xMove-=(int)xMove;
             yMove-=(int)yMove;
             s+=13;
@@ -153,6 +160,7 @@ public class CaSau extends Enemies{
                 attack=false;
                 atk=false;
                 move=true;
+                canAttack=false;
             }
         }
     }
@@ -178,8 +186,6 @@ public class CaSau extends Enemies{
             }else if(!attack) g2.drawImage(Move, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
             if(attack) g2.drawImage(Attack, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
         }
-        g2.drawString("mNum: "+mNum+" mConter: "+mCounter,10,100);
-        g2.drawString("attack: "+attack,10,110);
     }
 
     public void reset(){
