@@ -16,7 +16,7 @@ public class Enemies {
     public Rectangle bodyAreaA,bodyAreaC;
     public int sx, sy;
     public int eX,eY,eSX=0,eSY=0;
-    public boolean attacking=true,alive=true,daylui=false;
+    public boolean attacking=true,alive=true, hurt =false;
     public int eCounter=0,eNum=0,dlNum=0,dlS=6,sawCounter=0, sawW =0,sawH=0,cX=0,cY=0;
     public int hp;
     public int atkCounter;
@@ -82,7 +82,7 @@ public class Enemies {
         if (distance<300) saw = true;
     }
 
-    public void daylui(){
+    public void Hurt(){
         switch (gp.player.atkDirection) {
             case "attackUp":
                 mD = "U";
@@ -100,22 +100,21 @@ public class Enemies {
         dlNum++;
         switch (gp.player.atkDirection) {
             case "attackUp":
-                if (!eCollision) eSY -= dlS;
+                if (!eCollision) eSY --;
                 break;
             case "attackDown":
-                if (!eCollision) eSY += dlS;
+                if (!eCollision) eSY ++;
                 break;
             case "attackR":
-                if (!eCollision) eSX += dlS;
+                if (!eCollision) eSX ++;
                 break;
             case "attackL":
-                if (!eCollision) eSX -= dlS;
+                if (!eCollision) eSX --;
                 break;
         }
         if (dlNum % 5 == 0) {
             dlS--;
             if (dlNum == 30) {
-                daylui = false;
                 dlNum = 0;
                 dlS = 6;
             }
@@ -166,7 +165,7 @@ public class Enemies {
 
     public void attacked(){
         if (attacking && hp != 0) {//quai vat bi tan cong
-            daylui = true;
+            hurt = true;
             if (atkCounter == 0) {
                 if (hp > 1)
                     gp.playSoundEffect(0);
@@ -197,20 +196,18 @@ public class Enemies {
             sparkNum = 0;
             atkCounter = 0;
         }
-        if (hp == 0) {
-            alive = false;
-        }
-        if (sp) {
-            sparkCounter++;
-            if (sparkCounter % 7 == 0) {
-                sparkNum++;
-            }
-            if (sparkNum == 2) {
-                sparkCounter = 0;
-                sparkNum = 0;
-                sp = false;
-            }
-        }
+
+//        if (sp) {
+//            sparkCounter++;
+//            if (sparkCounter % 7 == 0) {
+//                sparkNum++;
+//            }
+//            if (sparkNum == 2) {
+//                sparkCounter = 0;
+//                sparkNum = 0;
+//                sp = false;
+//            }
+//        }
     }
 
     public void direction(){

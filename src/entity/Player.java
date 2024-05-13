@@ -480,16 +480,16 @@ public class Player extends Entity {
         if (isAttack) {
             switch (atkDirection) {
                 case "attackUp":
-                    if (!collisionOn) y -= 3;
+                    if (!collisionOn) y -- ;
                     break;
                 case "attackDown":
-                    if (!collisionOn) y += 3;
+                    if (!collisionOn) y ++;
                     break;
                 case "attackL":
-                    if (!collisionOn) x -= 3;
+                    if (!collisionOn) x --;
                     break;
                 case "attackR":
-                    if (!collisionOn) x += 3;
+                    if (!collisionOn) x ++;
                     break;
             }
 

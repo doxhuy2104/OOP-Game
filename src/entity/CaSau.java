@@ -78,12 +78,18 @@ public class CaSau extends Enemies{
     }
 
     public void update(){
-        super.direction();
+        if(!attack) super.direction();
         super.update();
         bodyAreaA = new Rectangle(eX + 16, eY + 36, 52, 52);
         bodyAreaC = new Rectangle(eSX+sx + 16, eSY+sy + 36, 52, 52);
 
-        if(daylui) super.daylui();
+        if(hurt) {
+            super.Hurt();
+            if (dlNum == 30) {
+                move = true;
+                hurt = false;
+            }
+        }
         if (saw) {
             super.saw();
             if(!move) wake=true;
@@ -99,7 +105,7 @@ public class CaSau extends Enemies{
                 }
             }
         }
-        if (move && alive && !daylui) {
+        if (move && alive && !hurt) {
             saw=false;
             super.move();
             mCounter++;

@@ -11,6 +11,9 @@ public class Slime extends Enemies {
     GamePanel gp;
     public final int screenX, screenY;
     private float transparency = 1.0f;
+    BufferedImage[] sMoveR, sJumpR, sMoveL, sJumpL,sHurtR,sHurtL,breakingR,breakingL;
+    boolean jump = false,breaking=false;
+    int hurtCounter=0,hurtNum=0,brCounter=0,brNum=0;
 
     public Slime(GamePanel gp) {
         super(gp);
@@ -47,13 +50,7 @@ public class Slime extends Enemies {
                 slimeR[i] = slimeSheet.getSubimage(i * 16, 16, 16, 16);
                 slimeL[i] = slimeSheet.getSubimage(48 - i * 16, 32, 16, 16);
             }
-            sR = new BufferedImage[2];
-            sR[0] = slimeSheet.getSubimage(0, 0, 16, 16);
-            sR[1] = slimeSheet.getSubimage(16, 0, 16, 16);
 
-            sL = new BufferedImage[2];
-            sL[0] = slimeSheet.getSubimage(0, 48, 16, 16);
-            sL[1] = slimeSheet.getSubimage(16, 48, 16, 16);
 
             shadow = ImageIO.read(getClass().getResourceAsStream("/enemies/enemySm.png"));
 
@@ -62,6 +59,56 @@ public class Slime extends Enemies {
             for (int i = 0; i < 3; i++) {
                 spark[i] = sparkSheet.getSubimage(28 * i, 0, 28, 34);
             }
+
+            BufferedImage slimeSheet2 = ImageIO.read(getClass().getResourceAsStream("/enemies/blueSlime.png"));
+            sMoveR = new BufferedImage[6];
+            for(int i = 0; i < 6; i++){
+                sMoveR[i] = slimeSheet2.getSubimage(i * 16, 8, 16, 24);
+            }
+
+            sJumpR = new BufferedImage[5];
+            for(int i = 0; i < 5; i++){
+                sJumpR[i] = slimeSheet2.getSubimage(16*6 + i * 16, 8, 16, 24);
+            }
+
+            sMoveL = new BufferedImage[6];
+            for(int i = 0; i < 6; i++){
+                sMoveL[i] = slimeSheet2.getSubimage(160-i * 16, 40, 16, 24);
+            }
+
+            sJumpL = new BufferedImage[5];
+            for(int i = 0; i < 5; i++){
+                sJumpL[i] = slimeSheet2.getSubimage(64 -  i * 16, 40, 16, 24);
+            }
+
+            sR = new BufferedImage[2];
+            sR[0] = slimeSheet2.getSubimage(192, 8, 16, 24);
+            sR[1] = slimeSheet2.getSubimage(176, 8, 16, 24);
+
+            sL = new BufferedImage[2];
+            sL[0] = slimeSheet2.getSubimage(176, 40, 16, 24);
+            sL[1] = slimeSheet2.getSubimage(192, 40, 16, 24);
+
+            sHurtL= new BufferedImage[5];
+            for(int i = 0; i < 5; i++){
+                sHurtL[i] = slimeSheet2.getSubimage(272 - i * 16, 40, 16, 24);
+            }
+
+            sHurtR= new BufferedImage[5];
+            for(int i = 0; i < 5; i++){
+                sHurtR[i] = slimeSheet2.getSubimage(208 + i * 16, 8, 16, 24);
+            }
+
+            breakingL = new BufferedImage[7];
+            for(int i = 0; i < 7; i++){
+                breakingL[i] = slimeSheet2.getSubimage(96 - i * 16, 104, 16, 24);
+            }
+
+            breakingR = new BufferedImage[7];
+            for(int i = 0; i < 7; i++){
+                breakingR[i] = slimeSheet2.getSubimage( i * 16, 72, 16, 24);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,20 +120,44 @@ public class Slime extends Enemies {
         bodyAreaA = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
         bodyAreaC = new Rectangle(eSX+sx + 8, eSY+sy + 24, 48, 36);//cap nhat tao do phan than quai vat
 
-        if(daylui) super.daylui();
-        if (saw) super.saw();
-        if (move && alive && !daylui){
-            super.move();
-            eCounter++;
-            if (eCounter % 8 == 0 && eNum < 3) {
-                eNum++;
+        if(hurt) {
+            move=false;
+            super.Hurt();
+            jump=false;
+            eCounter=0;
+            eSpeed=2;
+            eNum=0;
+            hurtCounter++;
+            if(hurtCounter%5==0&&hurtNum<4){
+                hurtNum++;
             }
-            if (eCounter == 32) {
-                eNum = 0;
-                eCounter = 0;
+            if(hurtCounter==30){
+                hurtNum=0;
+                hurtCounter=0;
+                hurt=false;
+                move=true;
             }
         }
-        if(!move){
+        if (saw) super.saw();
+        if (move && alive && !hurt){
+            super.move();
+                eCounter++;
+            if (eCounter % 8 == 0 && eNum < 5) {
+                eNum++;
+            }
+            if (eCounter == 40) {
+                eNum = 0;
+            }
+            if(eCounter == 80){
+                eNum = 0;
+                eCounter=0;
+                jump=true;
+                dx=(centerScreenX-centerX)/distance;
+                dy=(centerScreenY-centerY)/distance;
+            }
+        } if(jump) jump();
+
+        if(!move&&!jump){
             nMCounter++;
             if (nMCounter % 20 == 0 && nMNum < 1) {
                 nMNum++;
@@ -97,7 +168,48 @@ public class Slime extends Enemies {
             }
         }
         super.attacked();
+        if(hp==0&&alive){
+            breaking=true;
+        }
+        if(breaking){
+            move=false;
+            jump=false;
+            hurt=false;
+            brCounter++;
+            if(brCounter%5==0&&brNum<6){
+                brNum++;
+            }
+            if(brCounter==35){
+                brNum=0;
+                brCounter=0;
+                breaking=false;
+                alive=false;
+            }
+        }
     }
+
+    void jump(){
+            move=false;
+            eSpeed=5;
+            eCounter++;
+            if(eCounter % 10 == 0 && eNum < 4){
+                eNum++;
+            }
+            if(eCounter == 40){
+                eNum=0;
+                eCounter=0;
+                jump=false;
+                eSpeed=2;
+                move=true;
+            }
+        xMove+=dx*6;
+        yMove+=dy*6;
+        if(!eCollision&&!eCollisionL&&!eCollisionR)eSX+=(int)xMove;
+        if(!eCollision&&!eCollisionD&&!eCollisionU)eSY+=(int)yMove;
+        xMove-=(int)xMove;
+        yMove-=(int)yMove;
+        }
+
 
     public void draw(Graphics2D g2) {
         g2.setColor(Color.WHITE);
@@ -106,11 +218,44 @@ public class Slime extends Enemies {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
             if (chamThan) g2.drawImage(exclamation, eX + 33 - cX, eY - cY, sawW, sawH, null);
             if (move) {
-                if (eD.equals("LU") || eD.equals("LD") || eD.equals("L") || eD.equals("U")) slimeI = slimeL[eNum];
-                if (eD.equals("RU") || eD.equals("RD") || eD.equals("R") || eD.equals("D")) slimeI = slimeR[eNum];
-                g2.drawImage(slimeI, eX, eY, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
+                switch (eD) {
+                    case "L":
+                        slimeI = sMoveL[eNum];
+                        break;
+                    case "R":
+                        slimeI = sMoveR[eNum];
+                        break;
+                }
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-            } else {
+
+            }else if(jump) switch (eD) {
+                case "L":
+                    slimeI = sJumpL[eNum];
+                    break;
+                case "R":
+                    slimeI = sJumpR[eNum];
+                    break;
+            }
+            else if (hurt) {
+                switch (eD) {
+                    case "L":
+                        slimeI = sHurtL[hurtNum];
+                        break;
+                    case "R":
+                        slimeI = sHurtR[hurtNum];
+                        break;
+                }
+            } else if(breaking){
+                switch (eD) {
+                    case "L":
+                        slimeI = breakingL[brNum];
+                        break;
+                    case "R":
+                        slimeI = breakingR[brNum];
+                        break;
+                }
+            }
+            else {
                 switch (eD) {
                     case "L":
                         slimeI = sL[nMNum];
@@ -119,13 +264,15 @@ public class Slime extends Enemies {
                         slimeI = sR[nMNum];
                         break;
                 }
-
-                g2.drawImage(slimeI, eX, eY, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
             }
+            g2.drawImage(slimeI, eX, eY-32, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
+
         }
-        if (attacking && alive || sp) {
-            g2.drawImage(spark[sparkNum], eX - 24, eY - 36, gp.scale * spark[sparkNum].getWidth(), gp.scale * spark[sparkNum].getHeight(), null);
-        }
+
+//        if (attacking && alive || sp) {
+//            g2.drawImage(spark[sparkNum], eX - 24, eY - 36, gp.scale * spark[sparkNum].getWidth(), gp.scale * spark[sparkNum].getHeight(), null);
+//        }
+        g2.drawString("brCounter: " + brCounter+" brNum: "+ brNum+" hurt: "+ hurt+" breaking: "+breaking, 10, 100);
     }
 
 
