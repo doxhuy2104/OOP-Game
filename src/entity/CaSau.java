@@ -88,6 +88,7 @@ public class CaSau extends Enemies{
             if (dlNum == 30) {
                 move = true;
                 hurt = false;
+                dlNum = 0;
             }
         }
         if (saw) {

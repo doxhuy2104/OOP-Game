@@ -184,6 +184,7 @@ public class Slime extends Enemies {
                 brCounter=0;
                 breaking=false;
                 alive=false;
+                dlNum = 0;
             }
         }
     }

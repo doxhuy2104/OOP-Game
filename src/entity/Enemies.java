@@ -115,7 +115,7 @@ public class Enemies {
         if (dlNum % 5 == 0) {
             dlS--;
             if (dlNum == 30) {
-                dlNum = 0;
+
                 dlS = 6;
             }
         }
