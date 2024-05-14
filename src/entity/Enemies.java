@@ -10,42 +10,42 @@ public class Enemies {
     public final int screenX, screenY;
     private float transparency = 1.0f;
     private final float TRANSPARENCY_STEP = 0.5f;
-    public double xMove=0,yMove=0,distance,dx,dy;
+    public double xMove = 0, yMove = 0, distance, dx, dy;
     public int eSpeed;
     public BufferedImage shadow;
-    public Rectangle bodyAreaA,bodyAreaC;
+    public Rectangle bodyAreaA, bodyAreaC;
     public int sx, sy;
-    public int eX,eY,eSX=0,eSY=0;
-    public boolean attacking=true,alive=true, hurt =false;
-    public int eCounter=0,eNum=0,dlNum=0,dlS=6,sawCounter=0, sawW =0,sawH=0,cX=0,cY=0;
+    public int eX, eY, eSX = 0, eSY = 0;
+    public boolean attacking = true, alive = true, hurt = false;
+    public int eCounter = 0, eNum = 0, dlNum = 0, dlS = 6, sawCounter = 0, sawW = 0, sawH = 0, cX = 0, cY = 0;
     public int hp;
     public int atkCounter;
     BufferedImage[] spark;
-    public int sparkCounter=0,sparkNum=0;
-    public String eD="L", mD ="L";
-    BufferedImage slimeI,exclamation;
-    public boolean sp=false;
-    public boolean eCollision=false,eCollisionR=false,eCollisionL=false,eCollisionU=false,eCollisionD=false;
-    public boolean saw,move=false,chamThan=false;
-    public boolean eToPCU,eToPCD,eToPCL,eToPCR;
-    public BufferedImage[] slimeR,slimeL,sL,sR;
-    public Rectangle attackAreaU,attackAreaD,attackAreaR,attackAreaL;
-    public int nMCounter=0,nMNum=0;//no move
+    public int sparkCounter = 0, sparkNum = 0;
+    public String eD = "L", mD = "L";
+    BufferedImage slimeI, exclamation;
+    public boolean sp = false;
+    public boolean eCollision = false, eCollisionR = false, eCollisionL = false, eCollisionU = false, eCollisionD = false;
+    public boolean saw, move = false, chamThan = false;
+    public boolean eToPCU, eToPCD, eToPCL, eToPCR;
+    public BufferedImage[] slimeR, slimeL, sL, sR;
+    public Rectangle attackAreaU, attackAreaD, attackAreaR, attackAreaL;
+    public int nMCounter = 0, nMNum = 0;//no move
     public int speed;
     public boolean moved;
-    public int distanceX,distanceY;
-    public int centerX,centerY;
-    final int centerScreenX=512,centerScreenY=288;
+    public int distanceX, distanceY;
+    public int centerX, centerY;
+    final int centerScreenX = 512, centerScreenY = 288;
 
     //enemies
     GamePanel gp;
 
-    public Enemies(GamePanel gp){
-        this.gp=gp;
+    public Enemies(GamePanel gp) {
+        this.gp = gp;
         bodyAreaA = new Rectangle();
         saw = false;
         hp = 5;
-        eSpeed=2;
+        eSpeed = 2;
 
         eNum = 2;
         //mD = "L";
@@ -55,10 +55,14 @@ public class Enemies {
     }
 
     public void update() {
-        if (alive) {//cap nhat toa do quai vat
+
+        if (alive) {
             eX = -gp.player.x + gp.player.screenX + eSX + sx;
             eY = -gp.player.y + gp.player.screenY + eSY + sy;
+            System.out.println("toado: "+eX+" "+eY);
         }
+        bodyAreaA = new Rectangle(eX + 16, eY + 36, 52, 52);
+        bodyAreaC = new Rectangle(eSX + sx + 16, eSY + sy + 36, 52, 52);
         attacking = false;
         gp.attackChecker.attackChecker(this);
         eCollision = false;
@@ -74,15 +78,17 @@ public class Enemies {
         eToPCR = false;
         if (!gp.player.invisible) gp.collisionChecker.eToPCo(this);
         if (eToPCR || eToPCL || eToPCD || eToPCU) gp.player.invisible = true;
-        centerX= bodyAreaA.x+ bodyAreaA.width/2;
-        centerY= bodyAreaA.y+ bodyAreaA.height/2;
-        distanceX=centerScreenX-centerX;
-        distanceY=centerScreenY-centerY;
-        distance=Math.sqrt(distanceX*distanceX+distanceY*distanceY);
-        if (distance<300) saw = true;
+        centerX = bodyAreaA.x + bodyAreaA.width / 2;
+        centerY = bodyAreaA.y + bodyAreaA.height / 2;
+        distanceX = centerScreenX - centerX;
+        distanceY = centerScreenY - centerY;
+        distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        if (distance < 300){
+            saw = true;
+        }
     }
 
-    public void Hurt(){
+    public void Hurt() {
         switch (gp.player.atkDirection) {
             case "attackUp":
                 mD = "U";
@@ -100,16 +106,16 @@ public class Enemies {
         dlNum++;
         switch (gp.player.atkDirection) {
             case "attackUp":
-                if (!eCollision) eSY --;
+                if (!eCollision) eSY--;
                 break;
             case "attackDown":
-                if (!eCollision) eSY ++;
+                if (!eCollision) eSY++;
                 break;
             case "attackR":
-                if (!eCollision) eSX ++;
+                if (!eCollision) eSX++;
                 break;
             case "attackL":
-                if (!eCollision) eSX --;
+                if (!eCollision) eSX--;
                 break;
         }
         if (dlNum % 5 == 0) {
@@ -121,8 +127,8 @@ public class Enemies {
         }
     }
 
-    public void saw(){
-        if (!moved&&sawCounter < 60) {
+    public void saw() {
+        if (!moved && sawCounter < 60) {
             sawCounter++;
             chamThan = true;
             if (sawW < 20) {
@@ -132,29 +138,29 @@ public class Enemies {
                 cY += 2;
             }
         } else if (sawCounter == 60) {
-            sawCounter=0;
+            sawCounter = 0;
             move = true;
             moved = true;
             chamThan = false;
         }
     }
 
-    public void move(){
-        if(distance!=0) {
+    public void move() {
+        if (distance != 0) {
             dx = (centerScreenX - centerX) / distance;
             dy = (centerScreenY - centerY) / distance;
         }
-        if(dx>0)eD="R";
-        else eD="L";
+        if (dx > 0) eD = "R";
+        else eD = "L";
 
-        xMove+=dx*eSpeed;
-        yMove+=dy*eSpeed;
+        xMove += dx * eSpeed;
+        yMove += dy * eSpeed;
 
-        if(!eCollision&&!eCollisionL&&!eCollisionR)eSX+=(int) xMove;
-        if(!eCollision&&!eCollisionD&&!eCollisionU)eSY+=(int) yMove;
+        if (!eCollision && !eCollisionL && !eCollisionR) eSX += (int) xMove;
+        if (!eCollision && !eCollisionD && !eCollisionU) eSY += (int) yMove;
 
-        xMove-=(int) xMove;
-        yMove-=(int) yMove;
+        xMove -= (int) xMove;
+        yMove -= (int) yMove;
 
         sawW = 0;
         sawH = 0;
@@ -163,8 +169,8 @@ public class Enemies {
 
     }
 
-    public void attacked(){
-        if (attacking && hp != 0) {//quai vat bi tan cong
+    public void attacked() {
+        if (attacking && hp != 0) {
             hurt = true;
             if (atkCounter == 0) {
                 if (hp > 1)
@@ -210,34 +216,34 @@ public class Enemies {
 //        }
     }
 
-    public void direction(){
-        if(centerX>(gp.screenWidth/2)){
-            mD ="L";
-            if(centerY>(gp.screenHeight/2)){
-                mD="LU";
+    public void direction() {
+        if (centerX > (gp.screenWidth / 2)) {
+            mD = "L";
+            if (centerY > (gp.screenHeight / 2)) {
+                mD = "LU";
+            } else if (centerY < (gp.screenHeight / 2)) {
+                mD = "LD";
             }
-            else if(centerY<(gp.screenHeight/2)){
-                mD="LD";
-            }
-        } else if(centerX<(gp.screenWidth/2)){
-            mD ="R";
-            if(centerY>(gp.screenHeight/2)){
-                mD="RU";
-            }
-            else if(centerY<(gp.screenHeight/2)){
-                mD="RD";
+        } else if (centerX < (gp.screenWidth / 2)) {
+            mD = "R";
+            if (centerY > (gp.screenHeight / 2)) {
+                mD = "RU";
+            } else if (centerY < (gp.screenHeight / 2)) {
+                mD = "RD";
             }
         } else {
-            if(eY>screenY){
-                mD="U";
-            }
-            else if(eY<screenY){
-                mD="D";
+            if (eY > screenY) {
+                mD = "U";
+            } else if (eY < screenY) {
+                mD = "D";
             }
         }
     }
 
-    public void reset(){
+    public void draw(Graphics2D g2){
+    }
+
+    public void reset() {
         eSX = 0;
         eSY = 0;
         alive = true;

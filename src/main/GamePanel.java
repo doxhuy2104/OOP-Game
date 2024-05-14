@@ -1,8 +1,8 @@
 package main;
 
 import entity.CaSau;
-import entity.Slime;
 import entity.Player;
+import entity.Slime;
 import tile.TileManager;
 import ui.GameOver;
 import ui.Hud;
@@ -40,9 +40,9 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH, mouseClick);
     TileManager tileManager = new TileManager(this);
     public Menu uiManager = new Menu(this, keyH, mouseClick);
-    public Slime slime[] = new Slime[20];
+    public Slime[] slime = new Slime[20];
     Slime enemies = new Slime(this);
-    public CaSau caSau[] = new CaSau[20];
+    public CaSau[] caSau = new CaSau[20];
     Pause pauseS = new Pause(this, mouseClick);
     GameOver gameOver = new GameOver(this, mouseClick);
     Hud hud = new Hud(this);
@@ -93,11 +93,6 @@ public class GamePanel extends JPanel implements Runnable {
         if (uiManager.gameO) {
             FPS = 60;
             gameOver.update();
-            for (int i = 0; i < slime.length; i++) {
-                if (slime[i] != null) {
-                    slime[i].reset();//reset trang thai quai vat khi game over
-                }
-            }
         }
         if (uiManager.inGame) {
             FPS = 60;
@@ -113,28 +108,11 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
-            if (uiManager.play) {
-                if (uiManager.pC < 20) {
-                    uiManager.pC++;
-                }
-                if (uiManager.pC == 20 && keyH.escape) {
-                    uiManager.pC = 0;
-                    uiManager.pause = true;
-                    uiManager.play = false;
-                }
-            }
+
             if (uiManager.pause) {
                 pauseS.update();
-                if (uiManager.pC < 20) {
-                    uiManager.pC++;
-                }
-                if (keyH.escape && uiManager.pC == 20) {
-                    uiManager.pause = false;
-                    uiManager.play = true;
-                    uiManager.pC = 0;
-                }
             }
-        } else if (!uiManager.gameO) {//neu khong phai trong game va khong phai game over thi moi cap nhat menu
+        } else if (!uiManager.gameO) {
             FPS = 240;
             uiManager.updateUI();
         }

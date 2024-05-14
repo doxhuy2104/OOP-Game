@@ -5,14 +5,15 @@ import entity.Slime;
 
 public class AssetSetter {
     GamePanel gp;
-    public AssetSetter(GamePanel gp){
-        this.gp=gp;
+
+    public AssetSetter(GamePanel gp) {
+        this.gp = gp;
     }
 
-    public void setEnemies(){
+    public void setEnemies() {
         gp.slime[0] = new Slime(gp);
-        gp.slime[0].sx =11*gp.tileSize;
-        gp.slime[0].sy =6*gp.tileSize;
+        gp.slime[0].sx = 66 * gp.tileSize;
+        gp.slime[0].sy = 26 * gp.tileSize;
 
 //        gp.slime[1] = new Slime(gp);
 //        gp.slime[1].sx =43*gp.tileSize;
@@ -31,7 +32,7 @@ public class AssetSetter {
 //        gp.slime[4].sy =6*gp.tileSize;
 
         gp.caSau[0] = new CaSau(gp);
-        gp.caSau[0].sx = 12*gp.tileSize;
-        gp.caSau[0].sy = 24*gp.tileSize;
+        gp.caSau[0].sx = 54 * gp.tileSize;
+        gp.caSau[0].sy = 22 * gp.tileSize;
     }
 }

@@ -4,5 +4,5 @@ import java.awt.image.BufferedImage;
 
 public class Tile {
     public BufferedImage map;
-    public boolean collision=false;
+    public boolean collision = false;
 }

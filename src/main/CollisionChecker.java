@@ -3,8 +3,6 @@ package main;
 import entity.Enemies;
 import entity.Entity;
 
-import java.awt.*;
-
 public class CollisionChecker {
     GamePanel gp;
 
@@ -247,62 +245,63 @@ public class CollisionChecker {
                 enemieBot[i] = enemieTop[i] + gp.slime[i].bodyAreaA.height;
                 enemieLeft[i] = gp.slime[i].bodyAreaA.x;
                 enemieRight[i] = enemieLeft[i] + gp.slime[i].bodyAreaA.width;
-                if(gp.slime[i].alive){
-                switch (entity.collisionCheck) {
-                    case "up":
-                        if (playerTop - entity.speed <= enemieBot[i] && playerTop >= enemieBot[i] && playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
-                            entity.pToECU = true;
-                        }
-                        break;
-                    case "down":
-                        if (playerBot + entity.speed >= enemieTop[i] && playerBot <= enemieBot[i] & playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
-                            entity.pToECD = true;
-                        }
-                        break;
-                    case "left":
-                        if (playerLeft - entity.speed <= enemieRight[i] && playerLeft >= enemieLeft[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
-                            entity.pToECL = true;
-                        }
-                        break;
-                    case "right":
-                        if (playerRight + entity.speed >= enemieLeft[i] && playerRight <= enemieRight[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
-                            entity.pToECR = true;
-                        }
-                        break;
-                    case "upr":
-                        if (playerTop - entity.speed <= enemieBot[i] && playerTop >= enemieBot[i] && playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
-                            entity.pToECU = true;
-                        }
-                        if (playerRight + entity.speed >= enemieLeft[i] && playerRight <= enemieRight[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
-                            entity.pToECR = true;
-                        }
-                        break;
-                    case "upl":
-                        if (playerLeft - entity.speed <= enemieRight[i] && playerLeft >= enemieLeft[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
-                            entity.pToECL = true;
-                        }
-                        if (playerTop - entity.speed <= enemieBot[i] && playerTop >= enemieBot[i] && playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
-                            entity.pToECU = true;
-                        }
-                        break;
-                    case "downr":
-                        if (playerRight + entity.speed >= enemieLeft[i] && playerRight <= enemieRight[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
-                            entity.pToECR = true;
-                        }
-                        if (playerBot + entity.speed >= enemieTop[i] && playerBot <= enemieBot[i] & playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
-                            entity.pToECD = true;
-                        }
-                        break;
-                    case "downl":
-                        if (playerBot + entity.speed >= enemieTop[i] && playerBot <= enemieBot[i] & playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
-                            entity.pToECD = true;
-                        }
-                        if (playerLeft - entity.speed <= enemieRight[i] && playerLeft >= enemieLeft[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
-                            entity.pToECL = true;
-                        }
-                        break;
+                if (gp.slime[i].alive) {
+                    switch (entity.collisionCheck) {
+                        case "up":
+                            if (playerTop - entity.speed <= enemieBot[i] && playerTop >= enemieBot[i] && playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
+                                entity.pToECU = true;
+                            }
+                            break;
+                        case "down":
+                            if (playerBot + entity.speed >= enemieTop[i] && playerBot <= enemieBot[i] & playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
+                                entity.pToECD = true;
+                            }
+                            break;
+                        case "left":
+                            if (playerLeft - entity.speed <= enemieRight[i] && playerLeft >= enemieLeft[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
+                                entity.pToECL = true;
+                            }
+                            break;
+                        case "right":
+                            if (playerRight + entity.speed >= enemieLeft[i] && playerRight <= enemieRight[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
+                                entity.pToECR = true;
+                            }
+                            break;
+                        case "upr":
+                            if (playerTop - entity.speed <= enemieBot[i] && playerTop >= enemieBot[i] && playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
+                                entity.pToECU = true;
+                            }
+                            if (playerRight + entity.speed >= enemieLeft[i] && playerRight <= enemieRight[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
+                                entity.pToECR = true;
+                            }
+                            break;
+                        case "upl":
+                            if (playerLeft - entity.speed <= enemieRight[i] && playerLeft >= enemieLeft[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
+                                entity.pToECL = true;
+                            }
+                            if (playerTop - entity.speed <= enemieBot[i] && playerTop >= enemieBot[i] && playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
+                                entity.pToECU = true;
+                            }
+                            break;
+                        case "downr":
+                            if (playerRight + entity.speed >= enemieLeft[i] && playerRight <= enemieRight[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
+                                entity.pToECR = true;
+                            }
+                            if (playerBot + entity.speed >= enemieTop[i] && playerBot <= enemieBot[i] & playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
+                                entity.pToECD = true;
+                            }
+                            break;
+                        case "downl":
+                            if (playerBot + entity.speed >= enemieTop[i] && playerBot <= enemieBot[i] & playerLeft <= enemieRight[i] && playerRight >= enemieLeft[i]) {
+                                entity.pToECD = true;
+                            }
+                            if (playerLeft - entity.speed <= enemieRight[i] && playerLeft >= enemieLeft[i] && playerBot >= enemieTop[i] && playerTop <= enemieBot[i]) {
+                                entity.pToECL = true;
+                            }
+                            break;
+                    }
                 }
-            }}
+            }
         }
     }
 
@@ -319,58 +318,166 @@ public class CollisionChecker {
 
         switch (enemies.eD) {
             case "U":
-                if (enemieTop-enemies.dlS<=playerBot&&enemieTop>=playerTop&&enemieLeft <= playerRight && enemieRight >= playerLeft) {
+                if (enemieTop - enemies.dlS <= playerBot && enemieTop >= playerTop && enemieLeft <= playerRight && enemieRight >= playerLeft) {
                     enemies.eToPCU = true;
                 }
                 break;
             case "D":
-                if (enemieBot+enemies.dlS>=playerTop &&enemieBot<= playerTop&& enemieLeft <= playerRight && enemieRight >= playerLeft) {
+                if (enemieBot + enemies.dlS >= playerTop && enemieBot <= playerTop && enemieLeft <= playerRight && enemieRight >= playerLeft) {
                     enemies.eToPCD = true;
                 }
                 break;
             case "L":
-                if (enemieLeft-enemies.dlS<=playerRight&&enemieLeft>=playerLeft&&enemieBot>=playerTop&&enemieTop<=playerBot) {
+                if (enemieLeft - enemies.dlS <= playerRight && enemieLeft >= playerLeft && enemieBot >= playerTop && enemieTop <= playerBot) {
                     enemies.eToPCL = true;
                 }
                 break;
             case "R":
-                if (enemieRight+enemies.dlS>=playerLeft&&enemieRight<=playerRight&&enemieBot>=playerTop&&enemieTop<=playerBot) {
+                if (enemieRight + enemies.dlS >= playerLeft && enemieRight <= playerRight && enemieBot >= playerTop && enemieTop <= playerBot) {
                     enemies.eToPCR = true;
                 }
                 break;
             case "LU":
-                if (enemieLeft-enemies.dlS<=playerRight&&enemieLeft>=playerLeft&&enemieBot>=playerTop&&enemieTop<=playerBot) {
+                if (enemieLeft - enemies.dlS <= playerRight && enemieLeft >= playerLeft && enemieBot >= playerTop && enemieTop <= playerBot) {
                     enemies.eToPCL = true;
                 }
-                if (enemieTop-enemies.dlS<=playerBot&&enemieTop>=playerTop&&enemieLeft <= playerRight && enemieRight >= playerLeft) {
+                if (enemieTop - enemies.dlS <= playerBot && enemieTop >= playerTop && enemieLeft <= playerRight && enemieRight >= playerLeft) {
                     enemies.eToPCU = true;
                 }
                 break;
             case "LD":
-                if (enemieLeft-enemies.dlS<=playerRight&&enemieLeft>=playerLeft&&enemieBot>=playerTop&&enemieTop<=playerBot) {
+                if (enemieLeft - enemies.dlS <= playerRight && enemieLeft >= playerLeft && enemieBot >= playerTop && enemieTop <= playerBot) {
                     enemies.eToPCL = true;
                 }
-                if (enemieBot+enemies.dlS>=playerTop &&enemieBot<= playerTop&& enemieLeft <= playerRight && enemieRight >= playerLeft) {
+                if (enemieBot + enemies.dlS >= playerTop && enemieBot <= playerTop && enemieLeft <= playerRight && enemieRight >= playerLeft) {
                     enemies.eToPCD = true;
                 }
                 break;
             case "RU":
-                if (enemieTop-enemies.dlS<=playerBot&&enemieTop>=playerTop&&enemieLeft <= playerRight && enemieRight >= playerLeft) {
+                if (enemieTop - enemies.dlS <= playerBot && enemieTop >= playerTop && enemieLeft <= playerRight && enemieRight >= playerLeft) {
                     enemies.eToPCU = true;
                 }
-                if (enemieRight+enemies.dlS>=playerLeft&&enemieRight<=playerRight&&enemieBot>=playerTop&&enemieTop<=playerBot) {
+                if (enemieRight + enemies.dlS >= playerLeft && enemieRight <= playerRight && enemieBot >= playerTop && enemieTop <= playerBot) {
                     enemies.eToPCR = true;
                 }
                 break;
             case "RD":
-                if (enemieRight+enemies.dlS>=playerLeft&&enemieRight<=playerRight&&enemieBot>=playerTop&&enemieTop<=playerBot) {
+                if (enemieRight + enemies.dlS >= playerLeft && enemieRight <= playerRight && enemieBot >= playerTop && enemieTop <= playerBot) {
                     enemies.eToPCR = true;
                 }
-                if (enemieBot+enemies.dlS>=playerTop &&enemieBot<= playerTop&& enemieLeft <= playerRight && enemieRight >= playerLeft) {
+                if (enemieBot + enemies.dlS >= playerTop && enemieBot <= playerTop && enemieLeft <= playerRight && enemieRight >= playerLeft) {
                     enemies.eToPCD = true;
                 }
                 break;
+        }
+    }
 
+    public void atkCollision(Enemies enemies){
+        int enemieLeft = enemies.bodyAreaC.x;
+        int enemieRight = enemieLeft + enemies.bodyAreaC.width;
+        int enemieTop = enemies.bodyAreaC.y;
+        int enemieBottom = enemieTop + enemies.bodyAreaC.height;
+
+        int enemieLeftCol = enemieLeft / gp.tileSize;
+        int enemieRightCol = enemieRight / gp.tileSize;
+        int enemieTopRow = enemieTop / gp.tileSize;
+        int enemieBotRow = enemieBottom / gp.tileSize;
+
+        int tileNum1, tileNum2, tileNum3;
+
+        switch (enemies.mD) {
+            case "U":
+                enemieTopRow = (enemieTop - enemies.speed) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    enemies.eCollision = true;
+                }
+                break;
+            case "RU":
+                enemieTopRow = (enemieTop - enemies.speed) / gp.tileSize;
+                enemieRightCol = (enemieRight + enemies.speed) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
+                tileNum3 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    if (gp.tileManager.tile[tileNum3].collision)
+                        enemies.eCollisionR = true;
+                }
+                if (gp.tileManager.tile[tileNum2].collision || gp.tileManager.tile[tileNum3].collision) {
+                    if (gp.tileManager.tile[tileNum1].collision)
+                        enemies.eCollisionU = true;
+                }
+                break;
+            case "LU":
+                enemieTopRow = (enemieTop - enemies.speed) / gp.tileSize;
+                enemieLeftCol = (enemieLeft - enemies.speed) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
+                tileNum3 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    if (gp.tileManager.tile[tileNum3].collision)
+                        enemies.eCollisionL = true;
+                }
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum3].collision) {
+                    if (gp.tileManager.tile[tileNum2].collision)
+                        enemies.eCollisionU = true;
+                }
+                break;
+            case "D":
+                enemieBotRow = (enemieBottom + enemies.speed) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    enemies.eCollision = true;
+                }
+                break;
+            case "RD":
+                enemieBotRow = (enemieBottom + enemies.speed) / gp.tileSize;
+                enemieRightCol = (enemieRight + enemies.speed) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
+                tileNum3 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    if (gp.tileManager.tile[tileNum3].collision)
+                        enemies.eCollisionR = true;
+                }
+                if (gp.tileManager.tile[tileNum2].collision || gp.tileManager.tile[tileNum3].collision) {
+                    if (gp.tileManager.tile[tileNum1].collision)
+                        enemies.eCollisionD = true;
+                }
+                break;
+            case "LD":
+                enemieBotRow = (enemieBottom + enemies.speed) / gp.tileSize;
+                enemieLeftCol = (enemieLeft - enemies.speed) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
+                tileNum3 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    if (gp.tileManager.tile[tileNum3].collision)
+                        enemies.eCollisionL = true;
+                }
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum3].collision) {
+                    if (gp.tileManager.tile[tileNum2].collision)
+                        enemies.eCollisionD = true;
+                }
+                break;
+            case "L":
+                enemieLeftCol = (enemieLeft - 1) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    enemies.eCollision = true;
+                }
+                break;
+            case "R":
+                enemieRightCol = (enemieRight + 1) / gp.tileSize;
+                tileNum1 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
+                tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
+                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
+                    enemies.eCollision = true;
+                }
+                break;
         }
     }
 }
