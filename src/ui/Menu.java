@@ -448,7 +448,7 @@ public class Menu extends UI {
             }
         }
         gp.player.x = 60 * gp.tileSize;
-        gp.player.y = 24 * gp.tileSize;
+        gp.player.y = 24* gp.tileSize;
         gp.player.reset();
     }
 

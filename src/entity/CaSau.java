@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class CaSau extends Enemies {
+public class CaSau extends Entity {
     GamePanel gp;
     BufferedImage[] cMove, cAttack, cWake, cMoveL, cAttackL, cWakeL;
     BufferedImage cSleep, Wake, Move, Attack;
@@ -35,7 +35,6 @@ public class CaSau extends Enemies {
         attackAreaL = new Rectangle(screenX - 15 * gp.scale, screenY - 9 * gp.scale, 76, 136);
         attackAreaD = new Rectangle(screenX - 9 * gp.scale, screenY + 15 * gp.scale, 136, 76);
         attackAreaR = new Rectangle(screenX + 13 * gp.scale, screenY - 8 * gp.scale, 76, 136);
-
     }
 
     public void getCaSauImage() {
@@ -82,6 +81,22 @@ public class CaSau extends Enemies {
 
         if (hp == 0) alive = false;
 
+        if (alive) {
+            drawX = -gp.player.x + gp.player.screenX + eSX + sx;
+            x=eSX+sx;
+            drawY = -gp.player.y + gp.player.screenY + eSY + sy;
+            y=eSY+sy;
+        }
+        bodyAreaA = new Rectangle(drawX + 16, drawY + 36, 52, 52);
+        bodyAreaC = new Rectangle(x + 16, y + 36, 52, 52);
+        centerX = bodyAreaA.x + bodyAreaA.width / 2;
+        centerY = bodyAreaA.y + bodyAreaA.height / 2;
+        distanceX = centerScreenX - centerX;
+        distanceY = centerScreenY - centerY;
+        distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        if (distance < 300){
+            saw = true;
+        }
         super.update();
 
         if (hurt) {
@@ -149,8 +164,16 @@ public class CaSau extends Enemies {
         if (aNum == 2) {
             xMove += dx * 13;
             yMove += dy * 13;
-            if (!eCollision && !eCollisionL && !eCollisionR) eSX += (int) xMove;
-            if (!eCollision && !eCollisionD && !eCollisionU) eSY += (int) yMove;
+            eCollision = false;
+            eCollisionR = false;
+            eCollisionL = false;
+            eCollisionU = false;
+            eCollisionD = false;
+            gp.collisionChecker.checkTileEnemies(this);
+            //if (!eCollision && !eCollisionL && !eCollisionR)
+                eSX += (int) xMove;
+            //if (!eCollision && !eCollisionD && !eCollisionU)
+                eSY += (int) yMove;
             xMove -= (int) xMove;
             yMove -= (int) yMove;
             s += 13;
@@ -192,11 +215,12 @@ public class CaSau extends Enemies {
         }
         if (alive) {
             if (!moved) {
-                if (!saw) g2.drawImage(cSleep, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
-                else g2.drawImage(Wake, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
-            } else if (!attack) g2.drawImage(Move, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
-            if (attack) g2.drawImage(Attack, eX, eY, 22 * gp.scale, 22 * gp.scale, null);
+                if (!saw) g2.drawImage(cSleep, drawX, drawY, 22 * gp.scale, 22 * gp.scale, null);
+                else g2.drawImage(Wake, drawX, drawY, 22 * gp.scale, 22 * gp.scale, null);
+            } else if (!attack) g2.drawImage(Move, drawX, drawY, 22 * gp.scale, 22 * gp.scale, null);
+            if (attack) g2.drawImage(Attack, drawX, drawY, 22 * gp.scale, 22 * gp.scale, null);
         }
+        g2.drawString("drawX: "+drawX+" drawY: "+drawY+" screenX: "+screenX+" screenY: "+screenY, 10, 100);
     }
 
     @Override

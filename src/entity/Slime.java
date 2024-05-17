@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Slime extends Enemies {
+public class Slime extends Entity {
     GamePanel gp;
     public final int screenX, screenY;
     private float transparency = 1.0f;
@@ -115,10 +115,23 @@ public class Slime extends Enemies {
     }
 
     public void update() {
-        super.direction();
-
-        //bodyAreaA = new Rectangle(eX + 8, eY + 24, 48, 36);//cap nhat tao do phan than quai vat
-        //bodyAreaC = new Rectangle(eSX + sx + 8, eSY + sy + 24, 48, 36);//cap nhat tao do phan than quai vat
+        if(!jump)super.direction();
+        if (alive) {
+            drawX = -gp.player.x + gp.player.screenX + eSX + sx;
+            x=eSX+sx;
+            drawY = -gp.player.y + gp.player.screenY + eSY + sy+56;
+            y=eSY+sy;
+        }
+        bodyAreaA = new Rectangle(drawX + 4, drawY , 56, 40);//cap nhat tao do phan than quai vat
+        bodyAreaC = new Rectangle(x + 4, y + 56, 56, 40);//cap nhat tao do phan than quai vat
+        centerX = bodyAreaA.x + bodyAreaA.width / 2;
+        centerY = bodyAreaA.y + bodyAreaA.height / 2;
+        distanceX = centerScreenX - centerX;
+        distanceY = centerScreenY - centerY;
+        distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        if (distance < 300){
+            saw = true;
+        }
         super.update();
 
         if (hurt) {
@@ -189,8 +202,6 @@ public class Slime extends Enemies {
                 dlNum = 0;
             }
         }
-        System.out.println("distance: " + distance+" centerX: "+centerX);
-
     }
 
     void jump() {
@@ -221,9 +232,9 @@ public class Slime extends Enemies {
     public void draw(Graphics2D g2) {
         g2.setColor(Color.WHITE);
         if (alive) {
-            g2.drawImage(shadow, eX + 7, eY + 48, gp.scale * shadow.getWidth(), gp.scale * shadow.getHeight(), null);
+            g2.drawImage(shadow, x + 7, y + 48, gp.scale * shadow.getWidth(), gp.scale * shadow.getHeight(), null);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
-            if (chamThan) g2.drawImage(exclamation, eX + 33 - cX, eY - cY, sawW, sawH, null);
+            if (chamThan) g2.drawImage(exclamation, drawX + 33 - cX, drawY - cY, sawW, sawH, null);
             if (move) {
                 switch (eD) {
                     case "L":
@@ -271,8 +282,7 @@ public class Slime extends Enemies {
                         break;
                 }
             }
-            g2.drawImage(slimeI, eX, eY - 32, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
-
+            g2.drawImage(slimeI, drawX, drawY-56, gp.scale * slimeI.getWidth(), gp.scale * slimeI.getHeight(), null);
         }
 
 //        if (attacking && alive || sp) {

@@ -1,8 +1,6 @@
 package main;
 
-import entity.CaSau;
-import entity.Player;
-import entity.Slime;
+import entity.*;
 import tile.TileManager;
 import ui.GameOver;
 import ui.Hud;
@@ -11,6 +9,9 @@ import ui.Pause;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable {
     public final int originalTileSize = 16;
@@ -41,11 +42,11 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileManager = new TileManager(this);
     public Menu uiManager = new Menu(this, keyH, mouseClick);
     public Slime[] slime = new Slime[20];
-    Slime enemies = new Slime(this);
     public CaSau[] caSau = new CaSau[20];
     Pause pauseS = new Pause(this, mouseClick);
     GameOver gameOver = new GameOver(this, mouseClick);
     Hud hud = new Hud(this);
+    ArrayList<Entity> entities = new ArrayList<>();
 
     public CollisionChecker collisionChecker = new CollisionChecker(this);
     public AttackChecker attackChecker = new AttackChecker(this);
@@ -61,12 +62,12 @@ public class GamePanel extends JPanel implements Runnable {
         this.addMouseListener(mouseClick);
 
         player.getPlayerImage();
-        enemies.getSlimeImage();
     }
 
     public void setUpGame() {
         assetSetter.setEnemies();
         playMusic(0);
+
     }
 
     public void startGameThread() {
@@ -98,7 +99,7 @@ public class GamePanel extends JPanel implements Runnable {
             FPS = 60;
             if (uiManager.play) {
                 hud.update();
-                if (player.pAlive) player.update();
+                if (player.pAlive) player.updateP();
                 for (int i = 0; i < slime.length; i++) {
                     if (slime[i] != null) {
                         slime[i].update();
@@ -125,17 +126,26 @@ public class GamePanel extends JPanel implements Runnable {
         long drawStart = System.nanoTime();
         if (uiManager.inGame) {
             tileManager.draw(g2);
-            if (player.pAlive) {
-                player.draw(g2);
-                for (int i = 0; i < slime.length; i++) {
-                    if (slime[i] != null) {
-                        slime[i].draw(g2);
-                    }
-                    if (caSau[i] != null) {
-                        caSau[i].draw(g2);
-                    }
+
+                //player.draw(g2);
+
+            entities.add(player);
+            for (int i = 0; i < slime.length; i++) {
+                if (slime[i] != null) {
+                    entities.add(slime[i]);
+                }
+                if (caSau[i] != null) {
+                    entities.add(caSau[i]);
                 }
             }
+
+            entities.sort(Comparator.comparingInt(e -> e.y));
+
+            if (player.pAlive) for (int i=0;i<entities.size();i++) {
+                entities.get(i).draw(g2);
+            }
+
+            entities.clear();
 
             hud.draw(g2);
             if (uiManager.pause) {

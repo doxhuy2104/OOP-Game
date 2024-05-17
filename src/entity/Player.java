@@ -25,12 +25,13 @@ public class Player extends Entity {
     }
 
     public Player(GamePanel gp, KeyHandler keyH, MouseClickListener mouseC) {
+        super(gp);
         this.gp = gp;
         this.keyH = keyH;
         this.mouseClick = mouseC;
 
-        screenX = gp.screenWidth / 2 - gp.tileSize / 2;
-        screenY = gp.screenHeight / 2 - gp.tileSize / 2;
+        drawX=screenX = gp.screenWidth / 2 - gp.tileSize / 2;
+        drawY=screenY = gp.screenHeight / 2 - gp.tileSize / 2;
         mana = 100;
 
         solidArea = new Rectangle(8, 32, 48, 32);
@@ -211,7 +212,7 @@ public class Player extends Entity {
         }
     }
 
-    public void update() {
+    public void updateP() {
         if (keyH.sprint && canSprint) {//tang toc
             if (isMoving) sM = true;
             else sM = false;
@@ -330,7 +331,6 @@ public class Player extends Entity {
             invisible = true;
         }
 
-        //nhan vat khong nhan sat thuong
         if (invisible) {
             if (invisibleTime == 0) {
                 currentHP--;
@@ -349,9 +349,8 @@ public class Player extends Entity {
         if (currentHP == 0) {
             gp.uiManager.gameO = true;
             pAlive = false;
-        }//nhan vat chet
+        }
 
-        //kiem tra va cham
         collisionOn = false;
         collisionD = false;
         collisionL = false;
@@ -570,10 +569,11 @@ public class Player extends Entity {
         }
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
-        BufferedImage sliceImage = null;
-        BufferedImage swordImage = null;
+        BufferedImage sliceImage;
+        BufferedImage swordImage;
         if (isAttack) {
             switch (atkDirection) {
                 case "attackUp":
