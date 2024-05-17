@@ -1,9 +1,7 @@
 package main;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.*;
+import java.io.IOException;
 import java.net.URL;
 
 
@@ -19,8 +17,10 @@ public class Sound {
         soundURL[2] = getClass().getResource("/sound/mainMenu/hoverChange2.wav");
         soundURL[3] = getClass().getResource("/sound/mainMenu/fantasy-click.wav");
         soundURL[4] = getClass().getResource("/sound/enemyDie.wav");
-    }
+        soundURL[5] = getClass().getResource("/sound/coin.wav");
+        soundURL[6] = getClass().getResource("/sound/speed.wav");
 
+    }
     private void loadSound(URL url) {
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);

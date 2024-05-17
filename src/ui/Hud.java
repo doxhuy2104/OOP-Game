@@ -10,6 +10,7 @@ public class Hud extends UI {
     private double fillRegion = 144;
 
     public Hud(GamePanel gp) {
+        super(gp);
         this.gp = gp;
         getHudImage();
     }
