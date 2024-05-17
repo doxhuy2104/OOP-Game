@@ -60,7 +60,7 @@ public class Slime extends Entity {
                 spark[i] = sparkSheet.getSubimage(28 * i, 0, 28, 34);
             }
 
-            BufferedImage slimeSheet2 = ImageIO.read(getClass().getResourceAsStream("/enemies/blueSlime.png"));
+            BufferedImage slimeSheet2 = ImageIO.read(getClass().getResourceAsStream("/enemies/blueSlime copy.png"));
             sMoveR = new BufferedImage[6];
             for (int i = 0; i < 6; i++) {
                 sMoveR[i] = slimeSheet2.getSubimage(i * 16, 8, 16, 24);
@@ -222,8 +222,16 @@ public class Slime extends Entity {
         }
         xMove += dx * eSpeed;
         yMove += dy * eSpeed;
-        if (!eCollision && !eCollisionL && !eCollisionR) eSX += (int) xMove;
-        if (!eCollision && !eCollisionD && !eCollisionU) eSY += (int) yMove;
+        eCollision = false;
+        eCollisionR = false;
+        eCollisionL = false;
+        eCollisionU = false;
+        eCollisionD = false;
+        gp.collisionChecker.checkTileEnemies(this);
+        //if (!eCollision && !eCollisionL && !eCollisionR)
+            eSX += (int) xMove;
+        //if (!eCollision && !eCollisionD && !eCollisionU)
+            eSY += (int) yMove;
         xMove -= (int) xMove;
         yMove -= (int) yMove;
     }

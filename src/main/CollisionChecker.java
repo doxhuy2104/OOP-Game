@@ -135,17 +135,17 @@ public class CollisionChecker {
 
         switch (entity.mD) {
             case "U":
-                enemieTopRow = (enemieTop - ((int)entity.yMove+1)) / gp.tileSize;
+                enemieTopRow = (enemieTop + ((int)entity.yMove-1)) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
                 tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.eCollision = true;
-                    up=enemieTop-enemieTopRow*gp.tileSize;
+                    up=(enemieTopRow+1)*gp.tileSize-enemieTop;
                     entity.yMove=up;
                 }
                 break;
             case "RU":
-                enemieTopRow = (enemieTop - ((int)entity.yMove+1)) / gp.tileSize;
+                enemieTopRow = (enemieTop + ((int)entity.yMove-1)) / gp.tileSize;
                 enemieRightCol = (enemieRight + ((int)entity.xMove+1)) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
                 tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
@@ -154,7 +154,7 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum3].collision)
                     {
                         entity.eCollisionR = true;
-                        right=enemieRight-enemieRightCol*gp.tileSize;
+                        right=enemieRightCol*gp.tileSize-enemieRight;
                         entity.xMove=right;
                     }
 
@@ -163,14 +163,14 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum1].collision)
                     {
                         entity.eCollisionU = true;
-                        up=enemieTop-enemieTopRow*gp.tileSize;
+                        up=(enemieTopRow+1)*gp.tileSize-enemieTop;
                         entity.yMove=up;
                     }
                 }
                 break;
             case "LU":
-                enemieTopRow = (enemieTop - ((int)entity.yMove+1)) / gp.tileSize;
-                enemieLeftCol = (enemieLeft - ((int)entity.xMove+1)) / gp.tileSize;
+                enemieTopRow = (enemieTop + ((int)entity.yMove-1)) / gp.tileSize;
+                enemieLeftCol = (enemieLeft + ((int)entity.xMove-1)) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
                 tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieTopRow];
                 tileNum3 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
@@ -178,15 +178,16 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum3].collision)
                     {
                         entity.eCollisionL = true;
-                        left=enemieLeft-enemieLeftCol*gp.tileSize;
+                        left=(enemieLeftCol+1)*gp.tileSize-enemieLeft;
                         entity.xMove=left;
+                        System.out.println(enemieLeft+" "+(enemieLeftCol+1)*gp.tileSize);
                     }
                 }
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum3].collision) {
                     if (gp.tileManager.tile[tileNum2].collision)
                     {
                         entity.eCollisionU = true;
-                        up=enemieTop-enemieTopRow*gp.tileSize;
+                        up=(enemieTopRow+1)*gp.tileSize-enemieTop;
                         entity.yMove=up;
                     }
                 }
@@ -197,7 +198,7 @@ public class CollisionChecker {
                 tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.eCollision = true;
-                    down=enemieBottom-enemieBotRow*gp.tileSize;
+                    down=enemieBotRow*gp.tileSize-enemieBottom;
                     entity.yMove=down;
                 }
                 break;
@@ -211,7 +212,7 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum3].collision)
                     {
                         entity.eCollisionR = true;
-                        right=enemieRight-enemieRightCol*gp.tileSize;
+                        right=enemieRightCol*gp.tileSize-enemieRight;
                         entity.xMove=right;
                     }
                 }
@@ -219,14 +220,14 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum1].collision)
                     {
                         entity.eCollisionD = true;
-                        down=enemieBottom-enemieBotRow*gp.tileSize;
+                        down=enemieBotRow*gp.tileSize-enemieBottom;
                         entity.yMove=down;
                     }
                 }
                 break;
             case "LD":
                 enemieBotRow = (enemieBottom + ((int)entity.yMove+1)) / gp.tileSize;
-                enemieLeftCol = (enemieLeft - ((int)entity.xMove+1)) / gp.tileSize;
+                enemieLeftCol = (enemieLeft + ((int)entity.xMove-1)) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
                 tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
                 tileNum3 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
@@ -234,7 +235,7 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum3].collision)
                     {
                         entity.eCollisionL = true;
-                        left=enemieLeft-enemieLeftCol*gp.tileSize;
+                        left=(enemieLeftCol+1)*gp.tileSize-enemieLeft;
                         entity.xMove=left;
                     }
                 }
@@ -242,18 +243,18 @@ public class CollisionChecker {
                     if (gp.tileManager.tile[tileNum2].collision)
                     {
                         entity.eCollisionD = true;
-                        down=enemieBottom-enemieBotRow*gp.tileSize;
+                        down=enemieBotRow*gp.tileSize-enemieBottom;
                         entity.yMove=down;
                     }
                 }
                 break;
             case "L":
-                enemieLeftCol = (enemieLeft - ((int)entity.xMove+1)) / gp.tileSize;
+                enemieLeftCol = (enemieLeft + ((int)entity.xMove-1)) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[enemieLeftCol][enemieTopRow];
                 tileNum2 = gp.tileManager.mapTileNum[enemieLeftCol][enemieBotRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.eCollision = true;
-                    left=enemieLeft-enemieLeftCol*gp.tileSize;
+                    left=(enemieLeftCol+1)*gp.tileSize-enemieLeft;
                     entity.xMove=left;
                 }
                 break;
@@ -263,13 +264,11 @@ public class CollisionChecker {
                 tileNum2 = gp.tileManager.mapTileNum[enemieRightCol][enemieBotRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.eCollision = true;
-                    right=enemieRight-enemieRightCol*gp.tileSize;
+                    right=enemieRightCol*gp.tileSize-enemieRight;
                     entity.xMove=right;
                 }
                 break;
         }
-        System.out.println(entity.yMove);
-
     }
 
     public void pToECo(Entity entity) {
