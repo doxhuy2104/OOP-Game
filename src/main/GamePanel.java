@@ -1,76 +1,85 @@
 package main;
 
-import entity.*;
+import entity.Enemies;
+import entity.Entity;
+import entity.NPC;
+import entity.Player;
+import object.superObject;
 import tile.TileManager;
 import ui.GameOver;
-import ui.Hud;
 import ui.Menu;
 import ui.Pause;
+import ui.UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
-public class GamePanel extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements Runnable{
     public final int originalTileSize = 16;
     public final int scale = 4;
-    public final int tileSize = originalTileSize * scale;
-    public final int maxScreenRow = 9;
-    public final int maxScreenCol = 16;
-    public final int screenWidth = tileSize * maxScreenCol;
-    public final int screenHeight = tileSize * maxScreenRow;
+    public final int tileSize= originalTileSize*scale;
+    public final int maxScreenRow=9;
+    public final int maxScreenCol=16;
+    public final int screenWidth=tileSize*maxScreenCol;
+    public final int screenHeight=tileSize*maxScreenRow;
 
-    public final int maxWorldCol = 100;
-    public final int maxWorldRow = 100;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
+    public final int maxWorldCol=100;
+    public final int maxWorldRow=100;
+    public final int worldWidth=tileSize*maxWorldCol;
+    public final int worldHeight=tileSize*maxWorldRow;
 
     //System
-    public KeyHandler keyH = new KeyHandler(this);
-    public MouseClickListener mouseClick = new MouseClickListener(this, this);
-    public AssetSetter assetSetter = new AssetSetter(this);
-    public Sound sound = new Sound();
-    public Music music = new Music();
-    private long firstTime, lastTime;
+    public KeyHandler keyH=new KeyHandler(this);
+    public MouseClickListener mouseClick=new MouseClickListener(this,this);
+    public AssetSetter assetSetter =new AssetSetter(this);;
+    public Sound sound=new Sound();
+    public Music music=new Music();
 
     Thread gameThread;
 
     //In game
-    public Player player = new Player(this, keyH, mouseClick);
-    TileManager tileManager = new TileManager(this);
-    public Menu uiManager = new Menu(this, keyH, mouseClick);
-    public Slime[] slime = new Slime[20];
-    public CaSau[] caSau = new CaSau[20];
-    Pause pauseS = new Pause(this, mouseClick);
-    GameOver gameOver = new GameOver(this, mouseClick);
-    Hud hud = new Hud(this);
-    ArrayList<Entity> entities = new ArrayList<>();
+    public Player player=new Player(this,keyH,mouseClick);
+    TileManager tileManager =new TileManager(this);
+    public Menu uiManager=new Menu(this,keyH,mouseClick);
+    public UI ui = new UI(this);
+    public Enemies slime[]=new Enemies[20];
+    Enemies enemies=new Enemies(this);
+    Pause pauseS=new Pause(this,mouseClick);
+    GameOver gameOver=new GameOver(this,mouseClick);
 
-    public CollisionChecker collisionChecker = new CollisionChecker(this);
-    public AttackChecker attackChecker = new AttackChecker(this);
+    public CollisionChecker collisionChecker=new CollisionChecker(this);
+    public AttackChecker attackChecker=new AttackChecker(this);
 
+    public  superObject obj[] = new superObject[10];
+    public Entity npc[] = new Entity[10];
     public int FPS = 60;
+
+    //Game State
+    public int gameState;
+    public final int playState = 1;
+    public final int CharacterState = 2;
+    //public final int gameState = 3;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.BLACK);
+        this.setBackground(Color.pink);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
         this.addMouseListener(mouseClick);
-
         player.getPlayerImage();
+        enemies.getEnemiesImage();
     }
 
-    public void setUpGame() {
+    public void setUpGame(){
+        gameState = playState;
+        assetSetter.setObject();
         assetSetter.setEnemies();
+        assetSetter.setNpc();
         playMusic(0);
-
     }
 
-    public void startGameThread() {
+    public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -89,102 +98,127 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void update() {
-        firstTime = System.nanoTime();
-        if (uiManager.gameO) {
-            FPS = 60;
+    public void update(){
+        if(uiManager.gameO){
+            FPS=60;
             gameOver.update();
+            for(int i=0;i<slime.length;i++){
+                if(slime[i]!=null){
+                    slime[i].reset();//reset trang thai quai vat khi game over
+                }
+            }
         }
-        if (uiManager.inGame) {
+        if(uiManager.inGame) {
             FPS = 60;
             if (uiManager.play) {
-                hud.update();
-                if (player.pAlive) player.updateP();
-                for (int i = 0; i < slime.length; i++) {
-                    if (slime[i] != null) {
-                        slime[i].update();
+                if(gameState==playState) {
+                    if (player.pAlive) {
+                        player.update();
                     }
-                    if (caSau[i] != null) {
-                        caSau[i].update();
+                    tileManager.updateCampFire();
+                    for (int i = 0; i < slime.length; i++) {
+                        if (slime[i] != null) {
+                            slime[i].update();
+                        }
+                    }
+                    for(int i = 0;i<npc.length; i++){
+                        if(npc[i]!=null) {
+                            npc[i].update();
+                        }
                     }
                 }
             }
-
-            if (uiManager.pause) {
-                pauseS.update();
+                if (uiManager.play) {
+                    if (uiManager.pC < 20) {
+                        uiManager.pC++;
+                    }
+                    if (uiManager.pC == 20 && keyH.escape) {
+                        uiManager.pC = 0;
+                        uiManager.pause = true;
+                        uiManager.play = false;
+                    }
+                }
+                if (uiManager.pause) {
+                    pauseS.update();
+                    if (uiManager.pC < 20) {
+                        uiManager.pC++;
+                    }
+                    if (keyH.escape && uiManager.pC == 20) {
+                        uiManager.pause = false;
+                        uiManager.play = true;
+                        uiManager.pC = 0;
+                    }
+                }
+            } else if (!uiManager.gameO) {//neu khong phai trong game va khong phai game over thi moi cap nhat menu
+                FPS = 240;
+                uiManager.updateUI();
             }
-        } else if (!uiManager.gameO) {
-            FPS = 240;
-            uiManager.updateUI();
-        }
-        lastTime = System.nanoTime();
     }
 
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g){
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        long drawStart = System.nanoTime();
-        if (uiManager.inGame) {
-            tileManager.draw(g2);
+        Graphics2D g2=(Graphics2D) g;
 
-                //player.draw(g2);
-
-            entities.add(player);
-            for (int i = 0; i < slime.length; i++) {
-                if (slime[i] != null) {
-                    entities.add(slime[i]);
-                }
-                if (caSau[i] != null) {
-                    entities.add(caSau[i]);
+        long drawStart=System.nanoTime();
+        if(uiManager.inGame) {
+            //tileManager.drawGlass(g2);
+            //tileManager.drawWater(g2);
+            //tileManager.draw(g2);
+            tileManager.drawMap(g2);
+            //tileManager.drawCampFire(g2);
+            if(player.pAlive)player.draw(g2);
+            //tileManager.drawTree(g2);
+            if(player.pAlive)for(int i=0;i<slime.length;i++){
+                if(slime[i]!=null){
+                    slime[i].draw(g2);
                 }
             }
-
-            entities.sort(Comparator.comparingInt(e -> e.y));
-
-            if (player.pAlive) for (int i=0;i<entities.size();i++) {
-                entities.get(i).draw(g2);
-            }
-
-            entities.clear();
-
-            hud.draw(g2);
-            if (uiManager.pause) {
+            if(uiManager.pause){
                 pauseS.draw(g2);
             }
+            for (object.superObject superObject : obj) {
+                if (superObject != null) {
+                    superObject.draw(g2, this);
+                }
+            }
+            for (int i = 0; i<npc.length; i++) {
+                if (npc[i] != null) {
+                    npc[i].draw(g2);
+                }
+            }
+            ui.draw(g2);
             //toa do nhan vat
-            g2.drawString("Col: " + (player.x + player.solidArea.x) / tileSize, 10, 300);
-            g2.drawString("Row: " + (player.y + player.solidArea.y) / tileSize, 10, 310);
-        } else if (!uiManager.gameO) {
+            g2.drawString("Col: "+(player.x+player.solidArea.x)/tileSize,10,300);
+            g2.drawString("Row: "+(player.y+player.solidArea.y)/tileSize,10,310);
+        } else if(!uiManager.gameO){
             //main menu
             uiManager.draw(g2);
         }
 
-        if (uiManager.gameO) {
+        if(uiManager.gameO){
             gameOver.draw(g2);//Game Over
         }
-
-
-        long drawEnd = System.nanoTime();
-        //long passed = drawEnd - drawStart;
-        long passed = drawEnd - firstTime;
+        long drawEnd=System.nanoTime();
+        long passed=drawEnd-drawStart;
         g2.setColor(Color.WHITE);
         //g2.drawString("Draw Time: "+passed,10,400);
         //System.out.println("Draw Time: "+passed);
         g2.dispose();
+
     }
 
     //sound
-    public void playMusic(int i) {
+    public void playMusic(int i){
         music.setFile(i);
         music.play();
         music.loop();
     }
 
-    public void stopMusic() {
+    public void stopMusic(){
         music.stop();
     }
 
-    public void playSoundEffect(int i) {
+    public void playSoundEffect(int i){
         sound.setFile(i);
         sound.play();
     }

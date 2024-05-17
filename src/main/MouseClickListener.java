@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import javax.swing.*;
 
 public class MouseClickListener implements MouseListener, MouseMotionListener {
     private int mouseX, mouseY;
@@ -11,16 +12,15 @@ public class MouseClickListener implements MouseListener, MouseMotionListener {
     private Component component;
     GamePanel gp;
 
-    public MouseClickListener(Component component, GamePanel gp) {
+    public MouseClickListener(Component component,GamePanel gp) {
         this.component = component;
-        this.gp = gp;
+        this.gp=gp;
         component.addMouseMotionListener(this);
     }
 
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -35,7 +35,7 @@ public class MouseClickListener implements MouseListener, MouseMotionListener {
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClick = false;
-            gp.player.canAttack = true;
+            gp.player.canAttack=true;
         }
     }
 
@@ -51,8 +51,7 @@ public class MouseClickListener implements MouseListener, MouseMotionListener {
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 
     @Override
     public void mouseDragged(MouseEvent e) {

@@ -10,32 +10,28 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends Entity {
-    GamePanel gp;
     KeyHandler keyH;
     MouseClickListener mouseClick;
     // public final int screenX, screenY;
     int mouseX, mouseY;
-    boolean invi = true;
-    private boolean rM = false, aM = false, sM = false;
-    int sMC = 0, aMC = 0, rMC = 0, mC = 0;
-    public boolean canSprint;
-
+    boolean invi=true;
+    int hasKey = 0;
+    public boolean boost;
     public static int abs(int x) {
         return x >= 0 ? x : -x;
     }
 
     public Player(GamePanel gp, KeyHandler keyH, MouseClickListener mouseC) {
         super(gp);
-        this.gp = gp;
         this.keyH = keyH;
         this.mouseClick = mouseC;
 
-        drawX=screenX = gp.screenWidth / 2 - gp.tileSize / 2;
-        drawY=screenY = gp.screenHeight / 2 - gp.tileSize / 2;
-        mana = 100;
+        screenX = gp.screenWidth / 2 - gp.tileSize / 2;
+        screenY = gp.screenHeight / 2 - gp.tileSize / 2;
 
-        solidArea = new Rectangle(8, 32, 48, 32);
-
+        solidArea = new Rectangle(4, 10, 40, 28);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
         attackAreaU = new Rectangle(screenX - 7 * gp.scale, screenY - 10 * gp.scale, 136, 76);
         attackAreaL = new Rectangle(screenX - 15 * gp.scale, screenY - 9 * gp.scale, 76, 136);
         attackAreaD = new Rectangle(screenX - 9 * gp.scale, screenY + 15 * gp.scale, 136, 76);
@@ -46,17 +42,17 @@ public class Player extends Entity {
 
     public void setDefaultValues() {
         //toạ độ ban đầu
-        x = 9 * gp.tileSize;
-        y = 14 * gp.tileSize;
+        x = 1000;
+        y = 650;
 
-        uD = "D";
-        lR = "R";
+        uD="D";
+        lR="R";
         direction = "down";
         collisionCheck = "down";
         isAttack = false;
         currentHP = maxHP = 10;
-        pAlive = true;
-        canAttack = true;
+        pAlive=true;
+        canAttack=true;
     }
 
     public void getPlayerImage() {
@@ -212,50 +208,48 @@ public class Player extends Entity {
         }
     }
 
-    public void updateP() {
-        if (keyH.sprint && canSprint) {//tang toc
-            if (isMoving) sM = true;
-            else sM = false;
-            if (mana == 0) canSprint = false;
+    public boolean pickUpObj(int i) {
+        if(i != 999){
+            String objName = gp.obj[i].name;
+            switch(objName){
+                case "key":
+                    gp.playSoundEffect(5);
+                    hasKey++;
+                    gp.obj[i] = null;
+                    break;
+                case "chest":
+                    if(hasKey == 4) gp.obj[i] = null;
+                    break;
+                case "boots":
+                    //currentSpeed = speed;
+                    gp.playSoundEffect(6);
+                    gp.obj[i] = null;
+                    boost=true;
+                    startTime = System.currentTimeMillis();
+
+                    break;
+            }
+        }
+        return boost;
+    }
+    long startTime;
+    public void update() {
+        if (keyH.sprint) {//tang toc
             speed = 7;
-            cspeed = 5;
+            cspeed = 7;
         } else {
-            sM = false;
-            speed = 4;
-            cspeed = 3;
+            speed = 5;
+            cspeed = 5;
         }
-        if (sM && mana > 0) {
-            sMC++;
-            if (sMC >= 3) {
-                sMC = 0;
-                if (mana > 0) mana--;
-            }
-        }
-        if (rM) {
-            rMC++;
-            if (rMC <= 50) mana--;
-            else {
-                rM = false;
-                rMC = 0;
-
-            }
-        }
-        if (aM) {
-            aMC++;
-            if (aMC <= 10) mana -= 2;
-            else {
-                aMC = 0;
-                aM = false;
+        if (boost) {
+            speed = 8;
+            cspeed = 8;
+            long nextTime = System.currentTimeMillis() - startTime;
+            if(nextTime >= 3000){
+                boost = false;
             }
         }
 
-        if (!sM && !aM && !rM && mana < 100) {
-            mC++;
-            if (mC >= 3) {
-                mC = 0;
-                mana++;
-            }
-        }
 
         //toạ độ chuột
         mouseX = mouseClick.getMouseX() - gp.screenWidth / 2;
@@ -263,51 +257,51 @@ public class Player extends Entity {
 
         if (!isAttack) {
             if (keyH.upPressed) {
-                uD = "U";
+                uD="U";
                 isMoving = true;
                 direction = "up";
                 collisionCheck = "up";
                 if (keyH.rightPressed) {
-                    lR = "R";
+                    lR="R";
                     collisionCheck = direction = "upr";
-                    if (keyH.rolling && mana >= 50) isRolling = true;
+                    if (keyH.rolling) isRolling = true;
                 } else if (keyH.leftPressed) {
-                    lR = "L";
+                    lR="L";
                     collisionCheck = direction = "upl";
-                    if (keyH.rolling && mana >= 50) isRolling = true;
-                } else if (keyH.rolling && mana >= 50) {
+                    if (keyH.rolling) isRolling = true;
+                } else if (keyH.rolling) {
                     isRolling = true;
                     collisionCheck = "up";
                 }
             } else if (keyH.downPressed) {
-                uD = "D";
+                uD="D";
                 isMoving = true;
                 collisionCheck = direction = "down";
                 if (keyH.rightPressed) {
-                    lR = "R";
+                    lR="R";
                     collisionCheck = direction = "downr";
-                    if (keyH.rolling && mana >= 50) isRolling = true;
+                    if (keyH.rolling) isRolling = true;
                 } else if (keyH.leftPressed) {
-                    lR = "L";
+                    lR="L";
                     collisionCheck = direction = "downl";
-                    if (keyH.rolling && mana >= 50) isRolling = true;
-                } else if (keyH.rolling && mana >= 50) {
+                    if (keyH.rolling) isRolling = true;
+                } else if (keyH.rolling) {
                     isRolling = true;
                 }
             } else if (keyH.rightPressed) {
                 isMoving = true;
-                uD = "D";
-                lR = "R";
+                uD="D";
+                lR="R";
                 collisionCheck = direction = "right";
-                if (keyH.rolling && mana >= 50) {
+                if (keyH.rolling) {
                     isRolling = true;
                 }
             } else if (keyH.leftPressed) {
                 isMoving = true;
-                uD = "D";
-                lR = "L";
+                uD="D";
+                lR="L";
                 collisionCheck = direction = "left";
-                if (keyH.rolling && mana >= 50) {
+                if (keyH.rolling) {
                     isRolling = true;
                 }
             } else {
@@ -319,10 +313,8 @@ public class Player extends Entity {
         pToECD = false;
         pToECL = false;
         pToECR = false;
-        if (!invisible) {//check va cham voi quai vat
-            gp.collisionChecker.pToECo(this);
-        }
-
+        if(!invisible){//check va cham voi quai vat
+        gp.collisionChecker.pToECo(this);}
 
         if (pToECD || pToECL || pToECR || pToECU) {
             if (iT < 3) iT++;
@@ -331,59 +323,62 @@ public class Player extends Entity {
             invisible = true;
         }
 
-        if (invisible) {
-            if (invisibleTime == 0) {
+        //nhan vat khong nhan sat thuong
+        if(invisible){
+            if(invisibleTime==0){
                 currentHP--;
             }
             invisibleTime++;
-            if (invisibleTime % 10 == 0) {
-                if (invi) invi = false;
-                else invi = true;
-            }
-            if (invisibleTime == 60) {
-                invisible = false;
-                iT = 0;
-                invisibleTime = 0;
+            if(invisibleTime%10==0){
+                if(invi) invi=false;
+                else invi=true;            }
+            if(invisibleTime==60){
+                invisible=false;
+                iT=0;
+                invisibleTime=0;
             }
         }
-        if (currentHP == 0) {
-            gp.uiManager.gameO = true;
-            pAlive = false;
-        }
+        if(currentHP==0){
+            gp.uiManager.gameO=true;
+            pAlive=false;
+        }//nhan vat chet
 
+        //kiem tra va cham
         collisionOn = false;
         collisionD = false;
         collisionL = false;
         collisionR = false;
         collisionU = false;
-        //gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkTile(this);
 
         //huong tan cong khi nhan chuot trai
-        if (mouseClick.isLeftClick() && !isRolling && canAttack && mana >= 25) {
-            aM = true;
+        if (mouseClick.isLeftClick() && !isRolling&&canAttack) {
+
             isAttack = true;
             if (abs(mouseX) < abs(mouseY) && mouseY < 0) {
                 atkDirection = "attackUp";
                 collisionCheck = "up";
-                uD = "U";
+                uD="U";
             }
             if (abs(mouseX) < abs(mouseY) && mouseY > 0) {
                 atkDirection = "attackDown";
                 collisionCheck = "down";
-                uD = "D";
+                uD="D";
             }
             if (abs(mouseX) > abs(mouseY) && mouseX < 0) {
                 atkDirection = "attackL";
                 collisionCheck = "left";
-                lR = "L";
+                lR="L";
             }
             if (abs(mouseX) > abs(mouseY) && mouseX > 0) {
                 atkDirection = "attackR";
                 collisionCheck = "right";
-                lR = "R";
+                lR="R";
             }
         }
-
+        //va chạm vối đối tượng
+        int objIndex = gp.collisionChecker.checkObject(this, true);
+        pickUpObj(objIndex);
         //cap nhat tao do khi nhan vat di chuyen
         if (!isAttack && !isRolling && isMoving) {
             switch (direction) {
@@ -420,7 +415,6 @@ public class Player extends Entity {
 
         //trang thai lon
         if (isRolling) {
-            rM = true;
             rollingCounter++;
             if (rollingCounter % 5 == 0 && rollingNum < 6) {
                 rollingNum++;
@@ -431,28 +425,28 @@ public class Player extends Entity {
                 rollingNum = 0;
                 keyH.rolling = false;
             }
-            switch (direction) {
+            switch (direction){
                 case "up":
                     if (!collisionOn) y -= 9;
                     break;
                 case "down":
                     if (!collisionOn) y += 9;
                     break;
-                case "left":
+                case"left":
                     if (!collisionOn) x -= 9;
                     break;
-                case "right":
+                case"right":
                     if (!collisionOn) x += 9;
                     break;
-                case "upr":
+                case"upr":
                     if (!collisionR) x += 6;
                     if (!collisionU) y -= 6;
                     break;
-                case "upl":
+                case"upl":
                     if (!collisionL) x -= 6;
                     if (!collisionU) y -= 6;
                     break;
-                case "downr":
+                case"downr":
                     if (!collisionR) x += 6;
                     if (!collisionD) y += 6;
                     break;
@@ -468,7 +462,7 @@ public class Player extends Entity {
             isThink = false;
             thinkCounter = 0;
             spriteCounter++;
-            if (keyH.sprint && canSprint) {
+            if (keyH.sprint) {
                 if (spriteCounter % 6 == 0) {
                     spriteNum = (spriteNum + 1) % (direction.equals("up") ? up.length : direction.equals("left") ? left.length : right.length);
                 }
@@ -481,16 +475,16 @@ public class Player extends Entity {
         if (isAttack) {
             switch (atkDirection) {
                 case "attackUp":
-                    if (!collisionOn) y--;
+                    if (!collisionOn) y -= 3;
                     break;
                 case "attackDown":
-                    if (!collisionOn) y++;
+                    if (!collisionOn) y += 3;
                     break;
                 case "attackL":
-                    if (!collisionOn) x--;
+                    if (!collisionOn) x -= 3;
                     break;
                 case "attackR":
-                    if (!collisionOn) x++;
+                    if (!collisionOn) x += 3;
                     break;
             }
 
@@ -510,10 +504,10 @@ public class Player extends Entity {
             if (sliceCounter % 5 == 0) {
                 sliceNum++;
             }
-            if (attackCounter % 10 == 0) {
+            if (attackCounter % 5 == 0) {
                 attackNum = (attackNum + 1) % attackR.length;
             }
-            if (attackCounter == 1) canAttack = false;
+            if(attackCounter==1)canAttack=false;
             if (attackCounter >= 20) {
                 isAttack = false;
                 keyH.attack = false;
@@ -557,32 +551,31 @@ public class Player extends Entity {
         }
 
         //bong nhan vat
-        switch (lR) {
+        switch (lR){
             case "R":
-                shadowX = screenX + 8;
-                shadowY = screenY + 50;
+                shadowX= screenX+8;
+                shadowY= screenY+50;
                 break;
             case "L":
-                shadowX = screenX + 2;
-                shadowY = screenY + 50;
+                shadowX= screenX+2;
+                shadowY= screenY+50;
                 break;
         }
     }
 
-    @Override
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
-        BufferedImage sliceImage;
-        BufferedImage swordImage;
+        BufferedImage sliceImage = null;
+        BufferedImage swordImage = null;
         if (isAttack) {
             switch (atkDirection) {
                 case "attackUp":
-                    if (lR.equals("R")) {
+                    if(lR.equals("R")) {
                         swordImage = swordU[sliceNum];
                         sliceImage = sliceU[sliceNum];
                         g2.drawImage(sliceImage, screenX - 7 * gp.scale, screenY - 10 * gp.scale, gp.scale * sliceImage.getWidth(), gp.scale * sliceImage.getHeight(), null);
                         g2.drawImage(swordImage, screenX + 11 * gp.scale, screenY + 9 * gp.scale, gp.scale * swordImage.getWidth(), gp.scale * swordImage.getHeight(), null);
-                    } else {
+                    }else{
                         swordImage = swordUL[sliceNum];
                         sliceImage = sliceUL[sliceNum];
                         g2.drawImage(sliceImage, screenX - 12 * gp.scale, screenY - 10 * gp.scale, gp.scale * sliceImage.getWidth(), gp.scale * sliceImage.getHeight(), null);
@@ -598,7 +591,7 @@ public class Player extends Entity {
             }
 
         }
-        if (invisible && invi) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        if(invisible&&invi) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
         if (isMoving) {
             switch (direction) {
                 case "upr":
@@ -632,12 +625,13 @@ public class Player extends Entity {
                     image = left[spriteNum];
                     break;
             }
-        } else if (uD.equals("U")) {
-            if (lR.equals("L")) image = standUL;
-            else image = standUR;
-        } else if (uD.equals("D")) {
-            if (lR.equals("L")) image = thinkL[0];
-            else image = thinkR[0];
+        }else if(uD.equals("U")){
+            if (lR.equals("L")) image=standUL;
+            else image=standUR;
+        }
+        else if (uD.equals("D")){
+            if (lR.equals("L")) image=thinkL[0];
+            else image=thinkR[0];
         }
 
         if (isAttack) {
@@ -715,20 +709,16 @@ public class Player extends Entity {
         }
     }
 
-    public void reset() {
-        isMoving = false;
-        isRolling = false;
-        isThink = false;
-        invisible = false;
-        isAttack = false;
-        iT = 0;
-        pToECU = false;
-        pToECD = false;
-        pToECL = false;
-        pToECR = false;
-        gp.keyH.rolling = false;
-        gp.keyH.attack = false;
-        invisibleTime = 0;
-        mana= 100;
+    public void reset(){
+        isMoving=false;
+        isRolling=false;
+        isThink=false;
+        invisible=false;
+        isAttack=false;
+        iT=0;
+        pToECU=false;pToECD=false;pToECL=false;pToECR=false;
+        gp.keyH.rolling=false;
+        gp.keyH.attack=false;
+        invisibleTime=0;
     }
 }
