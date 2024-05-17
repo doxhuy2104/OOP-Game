@@ -2,21 +2,23 @@ package entity;
 
 import main.GamePanel;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Entity {
     //player
-    public int drawX,drawY;
+    public int drawX, drawY;
     public int shadowX, shadowY;//bóng
     public String direction;//hươớng nhân vật
     public String atkDirection;//hướng tấn công
-    //public int , ;//toạ độ nhân vật
+    public int x, y;//toạ độ nhân vật
     public boolean pAlive = true;//trạng thái sống
-    public int speed, cspeed;
+    public int speed, cspeed, currentSpeed;
+    public double acceleration;
     public String uD, lR;//huong de xac dinh anh trc khi dung
     public int mana;
-
     public String collisionCheck;//kiểm tra va chạm
 
     //ảnh
@@ -32,7 +34,8 @@ public class Entity {
 
 
     public int spriteCounter = 0, nMCounter = 0;
-    public int spriteNum = 0;
+    //public int sCounter;
+    public int spriteNum = 0, nMNum = 0;
     public int attackCounter = 0;
     public int attackNum = 0;
 
@@ -41,7 +44,8 @@ public class Entity {
     public boolean isThink = false;
     public int sliceCounter = 0;
     public int sliceNum = 0;
-    public Rectangle solidArea;
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public int solidAreaDefaultX, solidAreaDefaultY;
     public int screenX, screenY;
     public Rectangle attackAreaU, attackAreaD, attackAreaR, attackAreaL;
     public boolean collisionOn = false, collisionL = false, collisionR = false, collisionU = false, collisionD = false;
@@ -68,7 +72,7 @@ public class Entity {
     //public BufferedImage shadow;
     public Rectangle bodyAreaA, bodyAreaC;
     public int sx, sy;
-    public int x, y, eSX = 0, eSY = 0;
+    public int eSX = 0, eSY = 0;
     public boolean attacking = true, alive = true, hurt = false;
     public int eCounter = 0, eNum = 0, dlNum = 0, dlS = 6, sawCounter = 0, sawW = 0, sawH = 0, cX = 0, cY = 0;
     public int hp;
@@ -83,7 +87,7 @@ public class Entity {
     public boolean eToPCU, eToPCD, eToPCL, eToPCR;
     public BufferedImage[] slimeR, slimeL, sL, sR;
     //public Rectangle attackAreaU, attackAreaD, attackAreaR, attackAreaL;
-    public int  nMNum = 0;//no move
+    //public int  nMNum = 0;//no move
 
     public boolean moved;
     public int distanceX, distanceY;
@@ -91,17 +95,81 @@ public class Entity {
     final int centerScreenX = 512, centerScreenY = 288;
 
     //enemies
+
+
+    public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    public int worldX, worldY;
+    public int defaultX = worldX, defaultY = worldY;
+    public int acTionCounter = 0;
     GamePanel gp;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
-        bodyAreaA=new Rectangle();
-        bodyAreaC=new Rectangle();
-        screenX = gp.screenWidth / 2-gp.tileSize/2;
-        screenY = gp.screenHeight / 2-gp.tileSize/2;
+        bodyAreaA = new Rectangle();
+        bodyAreaC = new Rectangle();
+        screenX = gp.screenWidth / 2 - gp.tileSize / 2;
+        screenY = gp.screenHeight / 2 - gp.tileSize / 2;
+        direction = "down";
     }
 
+    public BufferedImage setup(String imagePath, int width, int height) {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream(imagePath));
+            Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = image.createGraphics();
+            g2d.drawImage(scaledImage, 0, 0, width, height, null);
+            g2d.dispose();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+    public void setAction() {
+    }
+
+    ;
+
     public void update() {
+        //setAction();
+        //collisionOn = false;
+//        if(collisionOn==false){
+//            switch (direction){
+//                case "up":
+//                    worldY-=speed;
+//                    if(defaultY - worldY > speed * 2) collisionOn = true;
+//                    break;
+//                case "down":
+//                    worldY+=speed;
+//                    if(worldY - defaultY > speed * 2) collisionOn = true;
+//                    break;
+//                case "left":
+//                    worldX-=speed;
+//                    if(defaultX - worldX > speed * 2) collisionOn = true;
+//                    break;
+//                case "right":
+//                    worldX+=speed;
+//                    if(worldX - defaultX > speed * 2) collisionOn = true;
+//                    break;
+//            }
+//            System.out.println(collisionOn);
+//        }
+//        System.out.println(collisionOn);
+        spriteCounter++;
+        if (spriteCounter == 12) {
+            if (spriteNum == 0) {
+                spriteNum += 1;
+            } else if (spriteNum == 1) {
+                spriteNum -= 1;
+            }
+            spriteCounter = 0;
+        }
+
+    }
+
+    public void updateE() {
 
 //        if (alive) {
 //            drawX = -gp.player.x + gp.player.screenX + eSX + sx;
@@ -204,10 +272,10 @@ public class Entity {
         eCollisionD = false;
         gp.collisionChecker.checkTileEnemies(this);
 
-       // if (!eCollision && !eCollisionL && !eCollisionR)
-            eSX += (int) xMove;
+        // if (!eCollision && !eCollisionL && !eCollisionR)
+        eSX += (int) xMove;
         //if (!eCollision && !eCollisionD && !eCollisionU)
-            eSY += (int) yMove;
+        eSY += (int) yMove;
 
         xMove -= (int) xMove;
         yMove -= (int) yMove;
@@ -290,7 +358,51 @@ public class Entity {
         }
     }
 
-    public void draw(Graphics2D g2){
+    public void draw(Graphics2D g2) {
+        BufferedImage image = null;
+        x = worldX - gp.player.x + gp.player.screenX;
+        y = worldY - gp.player.y + gp.player.screenY;
+
+        //if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX && worldX - gp.tileSize < gp.player.worldX + gp.player.screenX && worldY + gp.tileSize > gp.player.worldY - gp.player.screenY && worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+        switch (direction) {
+            case "up":
+                if (spriteNum == 0) {
+                    image = up1;
+                }
+                if (spriteNum == 1) {
+                    image = up2;
+                }
+                break;
+            case "down": // Trường hợp mới cho NPC đứng yên
+                if (spriteNum == 0) {
+                    image = down1;
+                }
+                if (spriteNum == 1) {
+                    image = down2;
+                }
+                break;
+            case "left":
+                if (spriteNum == 0) {
+                    image = left1;
+                }
+                if (spriteNum == 1) {
+                    image = left2;
+                }
+                break;
+            case "right":
+                if (spriteNum == 0) {
+                    image = right1;
+                }
+                if (spriteNum == 1) {
+                    image = right2;
+                }
+                break;
+        }
+
+        if (image != null) {
+            g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        }
+        //}
     }
 
     public void reset() {
@@ -307,4 +419,5 @@ public class Entity {
         chamThan = false;
         moved = false;
     }
+
 }

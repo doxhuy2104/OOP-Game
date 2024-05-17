@@ -114,7 +114,7 @@ public class Slime extends Entity {
         }
     }
 
-    public void update() {
+    public void updateE() {
         if(!jump)super.direction();
         if (alive) {
             drawX = -gp.player.x + gp.player.screenX + eSX + sx;
@@ -132,7 +132,7 @@ public class Slime extends Entity {
         if (distance < 300){
             saw = true;
         }
-        super.update();
+        super.updateE();
 
         if (hurt) {
             move = false;

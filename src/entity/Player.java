@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends Entity {
-    GamePanel gp;
     KeyHandler keyH;
     MouseClickListener mouseClick;
     // public final int screenX, screenY;
@@ -19,6 +18,8 @@ public class Player extends Entity {
     private boolean rM = false, aM = false, sM = false;
     int sMC = 0, aMC = 0, rMC = 0, mC = 0;
     public boolean canSprint;
+    int hasKey = 0;
+    public boolean boost;
 
     public static int abs(int x) {
         return x >= 0 ? x : -x;
@@ -27,6 +28,7 @@ public class Player extends Entity {
     public Player(GamePanel gp, KeyHandler keyH, MouseClickListener mouseC) {
         super(gp);
         this.gp = gp;
+
         this.keyH = keyH;
         this.mouseClick = mouseC;
 
@@ -34,8 +36,10 @@ public class Player extends Entity {
         drawY=screenY = gp.screenHeight / 2 - gp.tileSize / 2;
         mana = 100;
 
-        solidArea = new Rectangle(8, 32, 48, 32);
 
+        solidArea = new Rectangle(8, 32, 48, 32);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
         attackAreaU = new Rectangle(screenX - 7 * gp.scale, screenY - 10 * gp.scale, 136, 76);
         attackAreaL = new Rectangle(screenX - 15 * gp.scale, screenY - 9 * gp.scale, 76, 136);
         attackAreaD = new Rectangle(screenX - 9 * gp.scale, screenY + 15 * gp.scale, 136, 76);
@@ -46,8 +50,8 @@ public class Player extends Entity {
 
     public void setDefaultValues() {
         //toạ độ ban đầu
-        x = 9 * gp.tileSize;
-        y = 14 * gp.tileSize;
+        x = 1000;
+        y = 650;
 
         uD = "D";
         lR = "R";
@@ -212,7 +216,44 @@ public class Player extends Entity {
         }
     }
 
-    public void updateP() {
+    public boolean pickUpObj(int i) {
+        if (i != 999) {
+            String objName = gp.obj[i].name;
+            switch (objName) {
+                case "key":
+                    gp.playSoundEffect(5);
+                    hasKey++;
+                    gp.obj[i] = null;
+                    break;
+                case "chest":
+                    if (hasKey == 4) gp.obj[i] = null;
+                    break;
+                case "boots":
+                    //currentSpeed = speed;
+                    gp.playSoundEffect(6);
+                    gp.obj[i] = null;
+                    boost = true;
+                    startTime = System.currentTimeMillis();
+
+                    break;
+            }
+        }
+        return boost;
+    }
+
+    public void interRactNpc(int i) {
+        if (i != 999) {
+            gp.gameState = gp.npcState;
+            collisionOn = true;
+            collisionD = true;
+            collisionL = true;
+            collisionR = true;
+        }
+    }
+
+    long startTime;
+
+    public void update() {
         if (keyH.sprint && canSprint) {//tang toc
             if (isMoving) sM = true;
             else sM = false;
@@ -221,9 +262,18 @@ public class Player extends Entity {
             cspeed = 5;
         } else {
             sM = false;
-            speed = 4;
+            speed = 5;
             cspeed = 3;
         }
+        if (boost) {
+            speed = 8;
+            cspeed = 5;
+            long nextTime = System.currentTimeMillis() - startTime;
+            if (nextTime >= 3000) {
+                boost = false;
+            }
+        }
+
         if (sM && mana > 0) {
             sMC++;
             if (sMC >= 3) {
@@ -323,7 +373,6 @@ public class Player extends Entity {
             gp.collisionChecker.pToECo(this);
         }
 
-
         if (pToECD || pToECL || pToECR || pToECU) {
             if (iT < 3) iT++;
         }
@@ -331,6 +380,7 @@ public class Player extends Entity {
             invisible = true;
         }
 
+        //nhan vat khong nhan sat thuong
         if (invisible) {
             if (invisibleTime == 0) {
                 currentHP--;
@@ -349,18 +399,20 @@ public class Player extends Entity {
         if (currentHP == 0) {
             gp.uiManager.gameO = true;
             pAlive = false;
-        }
+        }//nhan vat chet
 
+        //kiem tra va cham
         collisionOn = false;
         collisionD = false;
         collisionL = false;
         collisionR = false;
         collisionU = false;
-        //gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkTile(this);
 
         //huong tan cong khi nhan chuot trai
-        if (mouseClick.isLeftClick() && !isRolling && canAttack && mana >= 25) {
+        if (mouseClick.isLeftClick() && !isRolling && canAttack&&mana>=25) {
             aM = true;
+
             isAttack = true;
             if (abs(mouseX) < abs(mouseY) && mouseY < 0) {
                 atkDirection = "attackUp";
@@ -383,7 +435,11 @@ public class Player extends Entity {
                 lR = "R";
             }
         }
-
+        //va chạm vối đối tượng
+        int objIndex = gp.collisionChecker.checkObject(this, true);
+        pickUpObj(objIndex);
+        int npcIndex = gp.collisionChecker.checkNpc(this, gp.npc);
+        interRactNpc(npcIndex);
         //cap nhat tao do khi nhan vat di chuyen
         if (!isAttack && !isRolling && isMoving) {
             switch (direction) {
@@ -421,6 +477,7 @@ public class Player extends Entity {
         //trang thai lon
         if (isRolling) {
             rM = true;
+
             rollingCounter++;
             if (rollingCounter % 5 == 0 && rollingNum < 6) {
                 rollingNum++;
@@ -569,7 +626,6 @@ public class Player extends Entity {
         }
     }
 
-    @Override
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
         BufferedImage sliceImage;
@@ -729,6 +785,6 @@ public class Player extends Entity {
         gp.keyH.rolling = false;
         gp.keyH.attack = false;
         invisibleTime = 0;
-        mana= 100;
+        mana = 100;
     }
 }

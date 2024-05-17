@@ -76,7 +76,7 @@ public class CaSau extends Entity {
         }
     }
 
-    public void update() {
+    public void updateE() {
         if (!attack) super.direction();
 
         if (hp == 0) alive = false;
@@ -97,7 +97,7 @@ public class CaSau extends Entity {
         if (distance < 300){
             saw = true;
         }
-        super.update();
+        super.updateE();
 
         if (hurt) {
             super.Hurt();
