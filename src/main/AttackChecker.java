@@ -1,17 +1,18 @@
 package main;
 
+import entity.Enemies;
 import entity.Entity;
+import entity.Player;
 
 public class AttackChecker {
     GamePanel gp;
     Entity entity;
-
     public AttackChecker(GamePanel gp) {
         this.gp = gp;
     }
 
     public void attackChecker(Entity entity) {
-        if (gp.player.isAttack) {
+        if(gp.player.isAttack){
             //vùng tấn công phía trên
             int atkU = gp.player.attackAreaU.y;
             int atkUR = gp.player.attackAreaU.x + gp.player.attackAreaU.width;
@@ -37,10 +38,10 @@ public class AttackChecker {
             int atkRL = gp.player.attackAreaR.x;
 
             //vùng cơ thể của quái vật
-            int bodyU = entity.bodyAreaA.y;
-            int bodyD = entity.bodyAreaA.y + entity.bodyAreaA.height;
-            int bodyL = entity.bodyAreaA.x;
-            int bodyR = entity.bodyAreaA.x + entity.bodyAreaA.width;
+            int bodyU = entity.bodyArea.y;
+            int bodyD  =entity.bodyArea.y + entity.bodyArea.height;
+            int bodyL = entity.bodyArea.x;
+            int bodyR = entity.bodyArea.x + entity.bodyArea.width;
 
             switch (gp.player.atkDirection) {
                 case "attackUp":
@@ -48,19 +49,19 @@ public class AttackChecker {
                         entity.attacking = true;
                     }
                     break;
-                case "attackDown":
-                    if (atkD > bodyU && atkDU < bodyU && atkDL < bodyR && atkDR > bodyL) {
-                        entity.attacking = true;
+                case"attackDown":
+                    if(atkD>bodyU&&atkDU<bodyU&&atkDL<bodyR&&atkDR>bodyL){
+                        entity.attacking=true;
                     }
                     break;
-                case "attackR":
-                    if (atkR > bodyL && atkRL < bodyL && atkRU < bodyD && atkRD > bodyU) {
-                        entity.attacking = true;
+                case"attackR":
+                    if(atkR>bodyL&&atkRL<bodyL&&atkRU<bodyD&&atkRD>bodyU){
+                        entity.attacking=true;
                     }
                     break;
-                case "attackL":
-                    if (atkL < bodyR && atkLR > bodyR && atkRU < bodyD && atkRD > bodyU) {
-                        entity.attacking = true;
+                case"attackL":
+                    if(atkL<bodyR&&atkLR>bodyR&&atkRU<bodyD&&atkRD>bodyU){
+                        entity.attacking=true;
                     }
                     break;
             }

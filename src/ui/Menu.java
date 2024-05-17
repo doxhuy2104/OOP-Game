@@ -6,6 +6,7 @@ import main.MouseClickListener;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,13 +17,14 @@ public class Menu extends UI {
     Font myFont, Font1, Font2;
 
     public Menu(GamePanel gp, KeyHandler keyH, MouseClickListener mouseC) {
+        super(gp);
         this.gp = gp;
         this.keyH = keyH;
         this.mouseClick = mouseC;
         getUIImage();
         loadFont();
         mouseLocation = "NONE";
-        currentD = difficult = "NORMAL";
+        currentD=difficult="NORMAL";
     }
 
     private void loadFont() {
@@ -92,7 +94,7 @@ public class Menu extends UI {
                     mouseLocation = "CONTINUE";
                     if (changeSoundC < 2) changeSoundC++;
                 }
-            } else if (mouseClick.getMouseX() >= 634 && mouseClick.getMouseX() <= 879 && mouseClick.getMouseY() <= 300 && mouseClick.getMouseY() >= 268) {
+            }else if (mouseClick.getMouseX() >= 634 && mouseClick.getMouseX() <= 879 && mouseClick.getMouseY() <= 300 && mouseClick.getMouseY() >= 268) {
                 mouseLocation = "NEW GAME";
                 if (changeSoundC < 2) changeSoundC++;
             } else if (mouseClick.getMouseX() >= 652 && mouseClick.getMouseX() <= 861 && mouseClick.getMouseY() <= 350 && mouseClick.getMouseY() >= 318) {
@@ -154,14 +156,14 @@ public class Menu extends UI {
         if (mouseClick.leftClick) {
             switch (mouseLocation) {
                 case "NONE":
-                    cc = 0;
+                    cc=0;
                     break;
                 case "CONTINUE":
                     gp.playSoundEffect(3);
                     CONTINUE = true;
                     break;
                 case "NEW GAME":
-                    if (cc < 2) cc++;
+                    if(cc<2)cc++;
                     NEWGAME = true;
                     break;
                 case "SETTINGS":
@@ -185,50 +187,54 @@ public class Menu extends UI {
             }
         }
         if (NEWGAME) {
-            firstTime = false;
-            reset();
-            play = true;
-            pause = false;
+            firstTime=false;
+            gp.player.reset();
+            play=true;
+            pause=false;
             exitUI = true;
+            NEWGAME = false;
+            for(int i=0;i<gp.slime.length;i++){
+                if(gp.slime[i]!=null){
+                    gp.slime[i].reset();
+                }
+            }
+            gp.player.x=4*gp.tileSize;
+            gp.player.y=4*gp.tileSize;
 
             //trạng thái
-            switch (difficult) {
-
+            switch (difficult)
+            {
                 case "EASY":
-                    for (int i = 0; i < gp.slime.length; i++) {
-                        if (gp.slime[i] != null) {
-                            gp.slime[i].hp = 2;
-                            gp.slime[i].eSpeed = 1;
+                    for(int i=0;i<gp.slime.length;i++){
+                        if(gp.slime[i]!=null){
+                            gp.slime[i].hp=2;
                         }
                     }
-                    gp.player.currentHP = gp.player.maxHP = 100;
+                    gp.player.currentHP=gp.player.maxHP=100;
                     break;
                 case "NORMAL":
-                    for (int i = 0; i < gp.slime.length; i++) {
-                        if (gp.slime[i] != null) {
-                            gp.slime[i].hp = 5;
-                            gp.slime[i].eSpeed = 2;
+                    for(int i=0;i<gp.slime.length;i++){
+                        if(gp.slime[i]!=null){
+                            gp.slime[i].hp=5;
                         }
                     }
-                    gp.player.currentHP = gp.player.maxHP = 10;
+                    gp.player.currentHP=gp.player.maxHP=10;
                     break;
                 case "HARD":
-                    for (int i = 0; i < gp.slime.length; i++) {
-                        if (gp.slime[i] != null) {
-                            gp.slime[i].hp = 10;
-                            gp.slime[i].eSpeed = 4;
+                    for(int i=0;i<gp.slime.length;i++){
+                        if(gp.slime[i]!=null){
+                            gp.slime[i].hp=10;
                         }
                     }
-                    gp.player.currentHP = gp.player.maxHP = 2;
+                    gp.player.currentHP=gp.player.maxHP=2;
                     break;
             }
-            NEWGAME = false;
         }
         if (CONTINUE) {
-            gp.player.canAttack = false;
+            gp.player.canAttack=false;
             inGame = true;
             menu = false;
-            play = true;
+            play=true;
             CONTINUE = false;
         }
         if (SETTINGS) {
@@ -236,34 +242,26 @@ public class Menu extends UI {
             bX = 720;
             bY = 500;
             if (mouseClick.getMouseX() >= (bX - 10) && mouseClick.getMouseX() <= 834 && mouseClick.getMouseY() <= 500 && mouseClick.getMouseY() >= 468) {
-                mouseLocation = "BACK";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "BACK";if (changeSoundC < 2) changeSoundC++;
                 side = true;
                 xL = bX - 30;
                 yL = 468;
                 xR = 834;
                 yR = 468;
             } else if (mouseClick.getMouseX() >= 600 && mouseClick.getMouseX() <= 632 && mouseClick.getMouseY() <= 252 && mouseClick.getMouseY() >= 220) {
-                mouseLocation = "1";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "1";if (changeSoundC < 2) changeSoundC++;
             } else if (mouseClick.getMouseX() >= 600 && mouseClick.getMouseX() <= 632 && mouseClick.getMouseY() <= 302 && mouseClick.getMouseY() >= 270) {
-                mouseLocation = "2";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "2";if (changeSoundC < 2) changeSoundC++;
             } else if (mouseClick.getMouseX() >= 600 && mouseClick.getMouseX() <= 632 && mouseClick.getMouseY() <= 352 && mouseClick.getMouseY() >= 320) {
-                mouseLocation = "3";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "3";if (changeSoundC < 2) changeSoundC++;
             } else if (mouseClick.getMouseX() >= 600 && mouseClick.getMouseX() <= 632 && mouseClick.getMouseY() <= 402 && mouseClick.getMouseY() >= 370) {
-                mouseLocation = "4";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "4";if (changeSoundC < 2) changeSoundC++;
             } else if (mouseClick.getMouseX() >= 717 && mouseClick.getMouseX() <= 933 && mouseClick.getMouseY() <= 103 && mouseClick.getMouseY() >= 71) {
-                mouseLocation = "M";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "M";if (changeSoundC < 2) changeSoundC++;
             } else if (mouseClick.getMouseX() >= 717 && mouseClick.getMouseX() <= 933 && mouseClick.getMouseY() <= 153 && mouseClick.getMouseY() >= 121) {
-                mouseLocation = "S";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "S";if (changeSoundC < 2) changeSoundC++;
             } else {
-                mouseLocation = "NONE";
-                changeSoundC = 0;
+                mouseLocation = "NONE";changeSoundC=0;
             }
             switch (mouseLocation) {
                 case "1":
@@ -314,52 +312,47 @@ public class Menu extends UI {
             if (mouseClick.leftClick) {
                 switch (mouseLocation) {
                     case "1":
-                        if (!difficult.equals("EASY")) firstTime = true;
-                        difficult = "EASY";
-                        gp.player.maxHP = 100;
-                        gp.player.currentHP = 100;
+                        if(!difficult.equals("EASY")) firstTime=true;
+                        difficult="EASY";
+                        gp.player.maxHP=100;
+                        gp.player.currentHP=100;
                         xCedB = 600;
                         yCedB = 220;
-                        if (cc < 2) cc++;
+                        if(cc<2) cc++;
                         break;
                     case "2":
-                        if (!difficult.equals("NORMAL")) firstTime = true;
-                        difficult = "NORMAL";
-                        gp.player.maxHP = 10;
-                        gp.player.currentHP = 10;
+                        if(!difficult.equals("NORMAL")) firstTime=true;
+                        difficult="NORMAL";
+                        gp.player.maxHP=10;
+                        gp.player.currentHP=10;
                         xCedB = 600;
-                        yCedB = 270;
-                        if (cc < 2) cc++;
+                        yCedB = 270;if(cc<2) cc++;
                         break;
-                    case "3":
-                        if (!difficult.equals("HARD")) firstTime = true;
-                        difficult = "HARD";
-                        gp.player.maxHP = 2;
-                        gp.player.currentHP = 2;
+                    case "3":if(!difficult.equals("HARD")) firstTime=true;
+                        difficult="HARD";
+                        gp.player.maxHP=2;
+                        gp.player.currentHP=2;
                         xCedB = 600;
-                        yCedB = 320;
-                        if (cc < 2) cc++;
+                        yCedB = 320;if(cc<2) cc++;
                         break;
                     case "4":
-                        if (cc < 2) cc++;
+                        if(cc<2) cc++;
                         System.exit(0);
                     case "M":
-                        if (!sF) mF = true;
-                        if (cc < 2) cc++;
+                        if (!sF) mF = true;if(cc<2) cc++;
                         break;
                     case "S":
-                        if (!mF) sF = true;
-                        if (cc < 2) cc++;
+                        if (!mF) sF = true;if(cc<2) cc++;
                         break;
                     case "NONE":
                         break;
                 }
-            } else cc = 0;
+            }else cc=0;
         }
         if (changeSoundC == 1) {
             gp.playSoundEffect(2);
         }
-        if (cc == 1) {
+        if(cc==1){
             gp.playSoundEffect(3);
         }
         if (mF) {
@@ -384,11 +377,9 @@ public class Menu extends UI {
             yMB = 113;
             mF = false;
             if (mouseClick.getMouseX() >= 725 && mouseClick.getMouseX() <= 925) {
-                sFillL = mouseClick.getMouseX() - 725;
-                gp.sound.volumeScale = sFillL / 20;
+                sFillL = mouseClick.getMouseX() - 725;gp.sound.volumeScale = sFillL / 20;
             } else if (mouseClick.getMouseX() < 725) {
-                sFillL = 0;
-                gp.sound.volumeScale = 0;
+                sFillL = 0; gp.sound.volumeScale=0;
             } else if (mouseClick.getMouseX() > 925) {
                 sFillL = 200;
             }
@@ -402,17 +393,14 @@ public class Menu extends UI {
             bX = 720;
             bY = 500;
             if (mouseClick.getMouseX() >= (bX - 10) && mouseClick.getMouseX() <= 834 && mouseClick.getMouseY() <= 500 && mouseClick.getMouseY() >= 468) {
-                mouseLocation = "BACK";
-                if (changeSoundC < 2) changeSoundC++;
+                mouseLocation = "BACK";if (changeSoundC < 2) changeSoundC++;
                 side = true;
                 xL = bX - 30;
                 yL = 468;
                 xR = 834;
                 yR = 468;
             } else {
-                mouseLocation = "NONE";
-                changeSoundC = 0;
-            }
+                mouseLocation = "NONE";changeSoundC=0;}
         }
 
         if (exitUI) {
@@ -436,22 +424,6 @@ public class Menu extends UI {
         }
     }
 
-
-    void reset() {
-
-        for (int i = 0; i < gp.slime.length; i++) {
-            if (gp.slime[i] != null) {
-                gp.slime[i].reset();
-            }
-            if (gp.caSau[i] != null) {
-                gp.caSau[i].reset();
-            }
-        }
-        gp.player.x = 60 * gp.tileSize;
-        gp.player.y = 24* gp.tileSize;
-        gp.player.reset();
-    }
-
     public void draw(Graphics2D g2) {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
@@ -473,7 +445,7 @@ public class Menu extends UI {
 //                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 80f));
 //            }
             g2.setColor(new Color(255, 255, 255));
-            if (!firstTime) g2.drawString("CONTINUE", 658, 250);
+            if(!firstTime)g2.drawString("CONTINUE", 658, 250);
             g2.drawString("NEW GAME", 644, 300);
             g2.drawString("SETTINGS", 662, 350);
             g2.drawString("CREDITS", 675, 400);
@@ -486,16 +458,11 @@ public class Menu extends UI {
         if (CREDITS) {
             g2.setFont(Font2);
             g2.setColor(Color.WHITE);
-            g2.drawString("Đỗ Xuân Huy", 500, 130);
-            g2.drawString("Nguyễn Văn Quang Huy", 500, 180);
-            g2.drawString("Bùi Nguyên Huy", 500, 230);
-            g2.drawString("Nguyễn Thế Anh", 500, 280);
-            g2.drawString("Phan Lê Hải Đăng", 500, 330);
-            g2.drawString("20225331", 860, 130);
-            g2.drawString("20225337", 860, 180);
-            g2.drawString("20225330", 860, 230);
-            g2.drawString("20225163", 860, 280);
-            g2.drawString("20225273", 860, 330);
+            g2.drawString("Đỗ Xuân Huy 20225331", 500, 50);
+            g2.drawString("Nguyễn Văn Quang Huy 20225337", 500, 100);
+            g2.drawString("Bùi Nguyên Huy 20225330", 500, 150);
+            g2.drawString("Nguyễn Thế Anh 20225163", 500, 200);
+            g2.drawString("Phan Lê Hải Đăng 20225273", 500, 250);
             g2.setFont(Font1);
             g2.drawString("BACK", bX, bY);
             if (side) {
